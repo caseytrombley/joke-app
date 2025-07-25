@@ -1,7 +1,7 @@
 <script setup>
 import { ref } from 'vue';
 import { useJokeStore } from '@/stores/jokeStore.js';
-import { useRouter } from 'vue-router';
+import {RouterLink, useRouter} from 'vue-router';
 
 const router = useRouter();
 const store = useJokeStore();
@@ -99,7 +99,8 @@ function handleSubmit() {
       />
     </div>
 
-    <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded">
+    <button type="submit" class="inline-block mt-4 px-6 py-3 bg-pink-600 text-white rounded-lg shadow hover:bg-pink-700 transition"
+    >
       Submit Joke
     </button>
   </form>
