@@ -1,5 +1,5 @@
 <template>
-  <div class="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50" v-if="visible">
+  <div class="fixed inset-0 bg-black/50 flex items-center justify-center z-50" v-if="visible">
     <div class="bg-white p-6 rounded shadow w-80">
       <p class="mb-4">Are you sure you want to delete this joke?</p>
       <div class="flex justify-end space-x-2">
