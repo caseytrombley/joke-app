@@ -51,6 +51,10 @@ export const useJokeStore = defineStore('jokeStore', {
                 if (router) {
                     router.replace({ query: { page: String(page) } });
                 }
+                window.scrollTo({
+                    top: 0,
+                    behavior: 'smooth'
+                });
             }
         },
 
