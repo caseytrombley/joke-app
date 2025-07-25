@@ -3,7 +3,7 @@
     <header class="bg-gray-800 text-white px-6 py-4">
       <div class="max-w-6xl mx-auto flex items-center justify-between">
         <RouterLink to="/" class="text-xl font-bold tracking-wide flex items-center gap-2">
-          <span>😂</span>
+          <span>🤡</span>
           <span>Jokester</span>
         </RouterLink>
 
