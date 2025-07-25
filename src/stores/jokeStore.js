@@ -30,7 +30,9 @@ export const useJokeStore = defineStore('jokeStore', {
             try {
                 const res = await fetch('https://raw.githubusercontent.com/15Dkatz/official_joke_api/master/jokes/index.json');
                 const data = await res.json();
-                this.jokes = data;
+
+                const saved = JSON.parse(localStorage.getItem('customJokes') || '[]');
+                this.jokes = [...saved, ...data];
             } catch (error) {
                 console.error('Failed to load jokes:', error);
             }
@@ -52,11 +54,25 @@ export const useJokeStore = defineStore('jokeStore', {
                 type: jokeData.type || 'general',
                 setup: jokeData.setup,
                 punchline: jokeData.punchline,
+                isCustom: true,
             };
 
             this.jokes = [newJoke, ...this.jokes];
             this.currentPage = 1;
+
+            // Save to localStorage
+            const saved = JSON.parse(localStorage.getItem('customJokes') || '[]');
+            localStorage.setItem('customJokes', JSON.stringify([newJoke, ...saved]));
+        },
+        removeCustomJoke(id) {
+            this.jokes = this.jokes.filter(joke => joke.id !== id);
+
+            const saved = JSON.parse(localStorage.getItem('customJokes') || '[]');
+            const updated = saved.filter(joke => joke.id !== id);
+            localStorage.setItem('customJokes', JSON.stringify(updated));
         }
+
+
 
 
     },
