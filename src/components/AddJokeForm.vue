@@ -1,6 +1,8 @@
 <script setup>
 import { ref, watch } from 'vue'
 import { useJokeStore } from '@/stores/jokeStore.js'
+import { useRouter } from 'vue-router';
+const router = useRouter();
 
 const store = useJokeStore()
 
@@ -25,10 +27,13 @@ function handleSubmit() {
     punchline: punchline.value,
   })
 
+  router.push({ path: '/', query: { page: 1 } });
+
   // Reset form
   setupText.value = ''
   punchline.value = ''
   type.value = ''
+
 }
 </script>
 

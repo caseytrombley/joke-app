@@ -43,5 +43,21 @@ export const useJokeStore = defineStore('jokeStore', {
                 }
             }
         },
+        addCustomJoke(jokeData) {
+            const validIds = this.jokes.map(j => parseInt(j.id, 10)).filter(id => !isNaN(id));
+            const nextId = validIds.length > 0 ? Math.max(...validIds) + 1 : 1;
+
+            const newJoke = {
+                id: nextId,
+                type: jokeData.type || 'general',
+                setup: jokeData.setup,
+                punchline: jokeData.punchline,
+            };
+
+            this.jokes = [newJoke, ...this.jokes];
+            this.currentPage = 1;
+        }
+
+
     },
 });
