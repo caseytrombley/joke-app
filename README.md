@@ -1,6 +1,6 @@
 # 🤡 Jokester - Vue 3 Joke App
 
-**Jokester** is a fun, interactive Vue 3 app that lets users browse, rate, and contribute their own jokes. Built using **Vite** and **Vue 3’s Composition API**, it features modern UI enhancements, joke filtering, local persistence, and inline editing—all styled with **Tailwind CSS**.
+**Jokester** is a fun, interactive Vue 3 app that lets users browse, rate, and contribute their own jokes. Built using **Vite** and **Vue 3’s Composition API**, it features modern UI enhancements, joke filtering, local persistence, and inline editing all styled with **Tailwind CSS**.
 
 ## 🚀 Features
 
@@ -32,25 +32,9 @@ Custom jokes are stored in `localStorage` to persist across sessions.
 
 ---
 
-## ❓ Questions
-
-### 1. **What’s a closure?**
-A **closure** is a function that retains access to its **lexical scope** (the variables around it) even after the outer function has exited. Closures allow Vue components and Pinia actions to access reactive refs, computed properties, and methods even when called later.
-
-Closures appear throughout this app—in:
-- event handlers (`handleSubmit`, `saveEdit`)
-- computed props (`filteredJokes`)
-- Pinia actions (`addCustomJoke`, `rateJoke`)
-
-### 2. **Where in the code is there a closure?**
-- `handleSubmit()` in `AddJokeForm.vue` closes over `setupText`, `punchline`, `type`, `store`, `router`.
-- `paginatedJokes` computed in `HomeView.vue` closes over `store.jokes`, `store.currentPage`.
-- `store.addCustomJoke()` closes over `this.jokes` in `jokeStore.js`.
-
----
-
 ## 🛠️ Development
 
 ```bash
-npm install
-npm run dev
+    npm install
+    npm run dev 
+```
