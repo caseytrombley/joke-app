@@ -5,7 +5,7 @@ export const useJokeStore = defineStore('jokeStore', {
         jokes: [],
         currentPage: 1,
         jokesPerPage: 10,
-        ratings: {} // { [jokeId]: number }
+        ratings: {}
     }),
 
     getters: {
@@ -30,7 +30,6 @@ export const useJokeStore = defineStore('jokeStore', {
                 const res = await fetch('https://raw.githubusercontent.com/15Dkatz/official_joke_api/master/jokes/index.json');
                 const data = await res.json();
 
-                // Assign stable IDs to jokes if missing
                 const jokesWithIds = data.map((joke, index) => ({
                     ...joke,
                     id: joke.id ?? `static-${index}`

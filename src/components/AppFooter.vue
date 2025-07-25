@@ -1,13 +1,11 @@
 <template>
   <footer class="bg-white border-t border-gray-200 py-8 mt-12 shadow-inner">
     <div class="max-w-6xl mx-auto px-4 flex flex-col md:flex-row justify-between items-center gap-4">
-      <!-- Branding -->
       <div class="flex items-center gap-2 text-gray-700 text-sm font-medium">
         <span class="text-2xl">🤡</span>
         <span>© {{ currentYear }} Jokester. Built for laughs.</span>
       </div>
 
-      <!-- Footer Links -->
       <div class="flex items-center flex-wrap gap-6 text-sm text-gray-600">
         <a
             href="https://www.caseytrombley.com"

@@ -105,7 +105,6 @@ function onRate(value) {
   store.rateJoke(joke.id, value);
 }
 
-// Edit mode
 const isEditing = ref(false);
 const editSetup = ref(joke.setup);
 const editPunchline = ref(joke.punchline);
@@ -122,7 +121,6 @@ function saveEdit() {
   isEditing.value = false;
 }
 
-// Reveal toggle
 const showPunchline = ref(false);
 </script>
 
