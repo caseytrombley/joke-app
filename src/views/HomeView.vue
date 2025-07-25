@@ -1,18 +1,16 @@
 <template>
   <div>
-    <h1 class="text-2xl font-bold mb-4">Joke App</h1>
+    <div class="filters mb-4 flex flex-wrap gap-4 items-center min-h-[48px]">
+      <template v-if="isLoading">
+        <div class="w-40 h-10 bg-gray-300 rounded animate-pulse"></div>
 
-    <ConfirmModal
-        :visible="showModal"
-        @cancel="showModal = false"
-        @confirm="confirmDelete"
-    />
+        <div class="flex items-center gap-2">
+          <div class="w-4 h-4 bg-gray-300 rounded animate-pulse"></div>
+          <div class="w-24 h-4 bg-gray-300 rounded animate-pulse"></div>
+        </div>
+      </template>
 
-    <div v-if="!jokes.length">Loading jokes...</div>
-
-    <div v-else>
-      <!-- Filters -->
-      <div class="mb-4 flex flex-wrap gap-4 items-center">
+      <template v-else>
         <select v-model="selectedType" class="border p-2 rounded">
           <option value="all">All Jokes</option>
           <option
@@ -28,9 +26,25 @@
           <input type="checkbox" v-model="sortByRating" />
           Sort by rating
         </label>
-      </div>
+      </template>
+    </div>
 
-      <!-- Joke List -->
+
+    <div v-if="isLoading">
+      <div class="grid gap-4">
+        <div
+            v-for="n in 10"
+            :key="n"
+            class="animate-pulse border p-4 rounded shadow space-y-4"
+        >
+          <div class="h-4 bg-gray-300 rounded w-3/4"></div>
+          <div class="h-4 bg-gray-300 rounded w-full"></div>
+          <div class="h-4 bg-gray-200 rounded w-5/6"></div>
+        </div>
+      </div>
+    </div>
+
+    <div v-else>
       <div class="grid gap-4">
         <JokeCard
             v-for="joke in paginatedJokes"
@@ -40,13 +54,19 @@
         />
       </div>
 
-      <!-- Pagination -->
       <Pagination
           :current-page="currentPage"
           :total-pages="totalPages"
           @change-page="(page) => store.setPage(page, router)"
       />
     </div>
+
+    <!-- Delete confirmation modal -->
+    <ConfirmModal
+        :visible="showModal"
+        @cancel="showModal = false"
+        @confirm="confirmDelete"
+    />
   </div>
 </template>
 
@@ -62,15 +82,14 @@ const store = useJokeStore();
 const route = useRoute();
 const router = useRouter();
 
-// Filter and sort state
+// UI + Modal state
+const isLoading = ref(true);
 const selectedType = ref('all');
 const sortByRating = ref(false);
-
-// Modal delete state
 const showModal = ref(false);
 const jokeToDelete = ref(null);
 
-// Modal logic
+// Confirm modal logic
 function requestDelete(joke) {
   jokeToDelete.value = joke;
   showModal.value = true;
@@ -84,7 +103,7 @@ function confirmDelete() {
   }
 }
 
-// Fetch jokes on mount
+// Initial load logic
 onMounted(async () => {
   if (!store.jokes.length) {
     await store.fetchJokes();
@@ -93,9 +112,14 @@ onMounted(async () => {
   const pageFromQuery = parseInt(route.query.page, 10);
   if (!isNaN(pageFromQuery)) {
     store.setPage(pageFromQuery);
+  } else {
+    store.setPage(1); // ⬅ reset if missing
   }
+
+  isLoading.value = false;
 });
 
+// Update page when URL query changes
 watch(
     () => route.query.page,
     (newPage) => {
@@ -103,18 +127,18 @@ watch(
       if (!isNaN(pageNum)) {
         store.setPage(pageNum);
       } else {
-        store.setPage(1);
+        store.setPage(1); // ⬅ reset if cleared
       }
     }
 );
 
-// Available joke types
+// Get joke types dynamically
 const jokeTypes = computed(() => {
   const types = new Set(store.jokes.map(j => j.type));
   return Array.from(types).sort();
 });
 
-// Filtered + sorted list
+// Filter + sort logic
 const filteredJokes = computed(() => {
   let list = [...store.jokes];
   if (selectedType.value !== 'all') {
@@ -130,17 +154,16 @@ const filteredJokes = computed(() => {
   return list;
 });
 
-// Paginated result
+// Paginate after filtering
 const paginatedJokes = computed(() => {
   const start = (store.currentPage - 1) * store.jokesPerPage;
   return filteredJokes.value.slice(start, start + store.jokesPerPage);
 });
 
-// Update total pages dynamically for filtered set
+// Computed states
 const totalPages = computed(() =>
     Math.ceil(filteredJokes.value.length / store.jokesPerPage)
 );
-
 const currentPage = computed(() => store.currentPage);
 const jokes = computed(() => store.jokes);
 </script>
