@@ -56,7 +56,7 @@
 
       <button
           @click="showPunchline = !showPunchline"
-          class="bg-blue-500 text-sm w-full px-4 py-2 text-white flex items-center justify-between transition"
+          class="bg-teal-500 text-sm w-full px-4 py-2 text-white flex items-center justify-between transition"
           :class="[
           'rounded-md',
           showPunchline ? 'rounded-b-none' : '',
@@ -72,7 +72,7 @@
       <transition name="fade-slide">
         <div
             v-if="showPunchline"
-            class="bg-blue-400 px-6 py-6 text-lg text-white rounded-b-md"
+            class="bg-teal-400 px-6 py-6 text-lg text-white rounded-b-md"
         >
           {{ joke.punchline }}
         </div>
