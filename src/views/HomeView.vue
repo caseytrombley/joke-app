@@ -1,5 +1,6 @@
 <template>
-  <div class="p-4">
+  <AppHero />
+  <div class="max-w-6xl mx-auto p-4 py-6">
     <JokeFilters
         :loading="isLoading"
         :types="jokeTypes"
@@ -56,6 +57,7 @@ import JokeCard from '../components/JokeCard.vue';
 import Pagination from '../components/Pagination.vue';
 import ConfirmModal from '../components/ConfirmModal.vue';
 import JokeFilters from "@/components/JokeFilters.vue";
+import AppHero from "@/components/AppHero.vue";
 
 const store = useJokeStore();
 const route = useRoute();
