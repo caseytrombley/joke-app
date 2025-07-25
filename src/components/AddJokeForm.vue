@@ -68,9 +68,11 @@ function handleSubmit() {
       <label class="block mb-1 font-semibold">Type</label>
       <select v-model="type" required class="w-full p-2 border rounded">
         <option value="">-- Select Type --</option>
-        <option value="programming">Programming</option>
         <option value="general">General</option>
         <option value="knock-knock">Knock Knock</option>
+        <option value="programming">Programming</option>
+        <option value="dad">Dad Joke</option>
+
       </select>
     </div>
 
