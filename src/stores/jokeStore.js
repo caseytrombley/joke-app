@@ -26,10 +26,13 @@ export const useJokeStore = defineStore('jokeStore', {
                 console.error('Failed to fetch jokes:', error);
             }
         },
-        setPage(page) {
+        setPage(page, router = null) {
             if (page >= 1 && page <= this.totalPages) {
                 this.currentPage = page;
+                if (router) {
+                    router.replace({ query: { page: String(page) } });
+                }
             }
-        },
+        }
     },
 });

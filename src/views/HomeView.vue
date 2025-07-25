@@ -13,23 +13,38 @@
       <Pagination
           :current-page="currentPage"
           :total-pages="totalPages"
-          @change-page="store.setPage"
+          @change-page="(page) => store.setPage(page, router)"
       />
     </div>
   </div>
 </template>
 
 <script setup>
-import { onMounted, computed } from 'vue';
+import { onMounted, computed, watch } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
 import { useJokeStore } from '../stores/jokeStore';
 import JokeCard from '../components/JokeCard.vue';
 import Pagination from '../components/Pagination.vue';
 
 const store = useJokeStore();
+const route = useRoute();
+const router = useRouter();
 
-onMounted(() => {
+onMounted(async () => {
   if (!store.jokes.length) {
-    store.fetchJokes();
+    await store.fetchJokes();
+  }
+
+  const pageFromQuery = parseInt(route.query.page, 10);
+  if (!isNaN(pageFromQuery)) {
+    store.setPage(pageFromQuery);
+  }
+});
+
+watch(() => route.query.page, (newPage) => {
+  const pageNum = parseInt(newPage, 10);
+  if (!isNaN(pageNum)) {
+    store.setPage(pageNum);
   }
 });
 
