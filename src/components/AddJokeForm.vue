@@ -63,7 +63,7 @@ function handleSubmit() {
 
 
 <template>
-  <form @submit.prevent="handleSubmit" class="space-y-4 bg-gray-100 p-6 rounded shadow">
+  <form @submit.prevent="handleSubmit" class="space-y-4">
     <div>
       <label class="block mb-1 font-semibold">Type</label>
       <select v-model="type" required class="w-full p-2 border rounded">
