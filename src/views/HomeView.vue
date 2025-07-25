@@ -96,13 +96,17 @@ onMounted(async () => {
   }
 });
 
-// Watch page query param
-watch(() => route.query.page, (newPage) => {
-  const pageNum = parseInt(newPage, 10);
-  if (!isNaN(pageNum)) {
-    store.setPage(pageNum);
-  }
-});
+watch(
+    () => route.query.page,
+    (newPage) => {
+      const pageNum = parseInt(newPage, 10);
+      if (!isNaN(pageNum)) {
+        store.setPage(pageNum);
+      } else {
+        store.setPage(1);
+      }
+    }
+);
 
 // Available joke types
 const jokeTypes = computed(() => {
