@@ -18,12 +18,21 @@ export const useJokeStore = defineStore('jokeStore', {
         },
     },
     actions: {
+        // async fetchJokes() {
+        //     try {
+        //         const res = await axios.get('https://official-joke-api.appspot.com/jokes/random/100');
+        //         this.jokes = res.data;
+        //     } catch (error) {
+        //         console.error('Failed to fetch jokes:', error);
+        //     }
+        // },
         async fetchJokes() {
             try {
-                const res = await axios.get('https://official-joke-api.appspot.com/jokes/random/100');
-                this.jokes = res.data;
+                const res = await fetch('https://raw.githubusercontent.com/15Dkatz/official_joke_api/master/jokes/index.json');
+                const data = await res.json();
+                this.jokes = data;
             } catch (error) {
-                console.error('Failed to fetch jokes:', error);
+                console.error('Failed to load jokes:', error);
             }
         },
         setPage(page, router = null) {
@@ -33,6 +42,6 @@ export const useJokeStore = defineStore('jokeStore', {
                     router.replace({ query: { page: String(page) } });
                 }
             }
-        }
+        },
     },
 });
