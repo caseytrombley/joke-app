@@ -1,6 +1,5 @@
 <template>
   <div class="flex justify-center items-center mt-6 space-x-2">
-    <!-- First -->
     <button
         class="p-2 border rounded disabled:opacity-40 disabled:cursor-not-allowed"
         :disabled="currentPage === 1"
@@ -10,7 +9,6 @@
       <ChevronsLeft class="w-4 h-4" />
     </button>
 
-    <!-- Prev -->
     <button
         class="p-2 border rounded disabled:opacity-40 disabled:cursor-not-allowed"
         :disabled="currentPage === 1"
@@ -24,7 +22,6 @@
       Page {{ currentPage }} of {{ totalPages }}
     </span>
 
-    <!-- Next -->
     <button
         class="p-2 border rounded disabled:opacity-40 disabled:cursor-not-allowed"
         :disabled="currentPage === totalPages"
@@ -34,7 +31,6 @@
       <ChevronRight class="w-4 h-4" />
     </button>
 
-    <!-- Last -->
     <button
         class="p-2 border rounded disabled:opacity-40 disabled:cursor-not-allowed"
         :disabled="currentPage === totalPages"

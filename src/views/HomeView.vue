@@ -1,33 +1,13 @@
 <template>
   <div class="p-4">
-    <div class="filters mb-4 flex flex-wrap gap-4 items-center min-h-[48px]">
-      <template v-if="isLoading">
-        <div class="w-40 h-10 bg-gray-300 rounded animate-pulse"></div>
-
-        <div class="flex items-center gap-2">
-          <div class="w-4 h-4 bg-gray-300 rounded animate-pulse"></div>
-          <div class="w-24 h-4 bg-gray-300 rounded animate-pulse"></div>
-        </div>
-      </template>
-
-      <template v-else>
-        <select v-model="selectedType" class="border p-2 rounded">
-          <option value="all">All Jokes</option>
-          <option
-              v-for="type in jokeTypes"
-              :key="type"
-              :value="type"
-          >
-            {{ type[0].toUpperCase() + type.slice(1) }} Jokes
-          </option>
-        </select>
-
-        <label class="flex items-center gap-2">
-          <input type="checkbox" v-model="sortByRating" />
-          Sort by rating
-        </label>
-      </template>
-    </div>
+    <JokeFilters
+        :loading="isLoading"
+        :types="jokeTypes"
+        :model-value-type="selectedType"
+        :model-value-sort="sortByRating"
+        @update:type="selectedType = $event"
+        @update:sort="sortByRating = $event"
+    />
 
     <div v-if="isLoading">
       <div class="grid gap-4">
@@ -75,6 +55,7 @@ import { useJokeStore } from '../stores/jokeStore';
 import JokeCard from '../components/JokeCard.vue';
 import Pagination from '../components/Pagination.vue';
 import ConfirmModal from '../components/ConfirmModal.vue';
+import JokeFilters from "@/components/JokeFilters.vue";
 
 const store = useJokeStore();
 const route = useRoute();
@@ -108,7 +89,7 @@ onMounted(async () => {
   if (!isNaN(pageFromQuery)) {
     store.setPage(pageFromQuery);
   } else {
-    store.setPage(1); // ⬅ reset if missing
+    store.setPage(1);
   }
 
   isLoading.value = false;
@@ -121,7 +102,7 @@ watch(
       if (!isNaN(pageNum)) {
         store.setPage(pageNum);
       } else {
-        store.setPage(1); // ⬅ reset if cleared
+        store.setPage(1);
       }
     }
 );
