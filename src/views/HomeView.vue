@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="p-4">
     <div class="filters mb-4 flex flex-wrap gap-4 items-center min-h-[48px]">
       <template v-if="isLoading">
         <div class="w-40 h-10 bg-gray-300 rounded animate-pulse"></div>
@@ -28,7 +28,6 @@
         </label>
       </template>
     </div>
-
 
     <div v-if="isLoading">
       <div class="grid gap-4">
@@ -61,7 +60,6 @@
       />
     </div>
 
-    <!-- Delete confirmation modal -->
     <ConfirmModal
         :visible="showModal"
         @cancel="showModal = false"
@@ -82,14 +80,12 @@ const store = useJokeStore();
 const route = useRoute();
 const router = useRouter();
 
-// UI + Modal state
 const isLoading = ref(true);
 const selectedType = ref('all');
 const sortByRating = ref(false);
 const showModal = ref(false);
 const jokeToDelete = ref(null);
 
-// Confirm modal logic
 function requestDelete(joke) {
   jokeToDelete.value = joke;
   showModal.value = true;
@@ -103,7 +99,6 @@ function confirmDelete() {
   }
 }
 
-// Initial load logic
 onMounted(async () => {
   if (!store.jokes.length) {
     await store.fetchJokes();
@@ -119,7 +114,6 @@ onMounted(async () => {
   isLoading.value = false;
 });
 
-// Update page when URL query changes
 watch(
     () => route.query.page,
     (newPage) => {
@@ -132,13 +126,11 @@ watch(
     }
 );
 
-// Get joke types dynamically
 const jokeTypes = computed(() => {
   const types = new Set(store.jokes.map(j => j.type));
   return Array.from(types).sort();
 });
 
-// Filter + sort logic
 const filteredJokes = computed(() => {
   let list = [...store.jokes];
   if (selectedType.value !== 'all') {
@@ -154,13 +146,11 @@ const filteredJokes = computed(() => {
   return list;
 });
 
-// Paginate after filtering
 const paginatedJokes = computed(() => {
   const start = (store.currentPage - 1) * store.jokesPerPage;
   return filteredJokes.value.slice(start, start + store.jokesPerPage);
 });
 
-// Computed states
 const totalPages = computed(() =>
     Math.ceil(filteredJokes.value.length / store.jokesPerPage)
 );
