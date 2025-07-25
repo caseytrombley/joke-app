@@ -1,4 +1,3 @@
-// store/jokeStore.js
 import { defineStore } from 'pinia';
 
 export const useJokeStore = defineStore('jokeStore', {
@@ -31,7 +30,7 @@ export const useJokeStore = defineStore('jokeStore', {
                 const res = await fetch('https://raw.githubusercontent.com/15Dkatz/official_joke_api/master/jokes/index.json');
                 const data = await res.json();
 
-                // Add unique ID to jokes that don’t already have one
+                // Assign stable IDs to jokes if missing
                 const jokesWithIds = data.map((joke, index) => ({
                     ...joke,
                     id: joke.id ?? `static-${index}`
@@ -71,7 +70,6 @@ export const useJokeStore = defineStore('jokeStore', {
             this.jokes = [newJoke, ...this.jokes];
             this.currentPage = 1;
 
-            // Save to localStorage
             const saved = JSON.parse(localStorage.getItem('customJokes') || '[]');
             localStorage.setItem('customJokes', JSON.stringify([newJoke, ...saved]));
         },
@@ -82,6 +80,20 @@ export const useJokeStore = defineStore('jokeStore', {
             const saved = JSON.parse(localStorage.getItem('customJokes') || '[]');
             const updated = saved.filter(joke => joke.id !== id);
             localStorage.setItem('customJokes', JSON.stringify(updated));
+        },
+
+        editCustomJoke(id, newSetup, newPunchline) {
+            const joke = this.jokes.find(j => j.id === id);
+            if (joke && joke.isCustom) {
+                joke.setup = newSetup;
+                joke.punchline = newPunchline;
+
+                const saved = JSON.parse(localStorage.getItem('customJokes') || '[]');
+                const updated = saved.map(j =>
+                    j.id === id ? { ...j, setup: newSetup, punchline: newPunchline } : j
+                );
+                localStorage.setItem('customJokes', JSON.stringify(updated));
+            }
         },
 
         rateJoke(jokeId, rating) {

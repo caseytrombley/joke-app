@@ -1,41 +1,66 @@
 <script setup>
-import { ref, watch } from 'vue'
-import { useJokeStore } from '@/stores/jokeStore.js'
+import { ref } from 'vue';
+import { useJokeStore } from '@/stores/jokeStore.js';
 import { useRouter } from 'vue-router';
+
 const router = useRouter();
+const store = useJokeStore();
 
-const store = useJokeStore()
+const setupText = ref('');
+const punchline = ref('');
+const type = ref('');
 
-const setupText = ref('')
-const punchline = ref('')
-const type = ref('')
+function capitalize(text) {
+  if (!text) return '';
+  return text.charAt(0).toUpperCase() + text.slice(1);
+}
 
-const isKnockKnock = ref(false)
+function normalizeSetup(text) {
+  let trimmed = text.trim();
 
-watch(type, (val) => {
-  isKnockKnock.value = val === 'knock-knock'
-})
+  trimmed = capitalize(trimmed);
+
+  const questionWords = ['What', 'How', 'Who', 'When', 'Where', 'Why'];
+  const firstWord = trimmed.split(' ')[0];
+  if (questionWords.includes(firstWord) && !/[?]$/.test(trimmed)) {
+    trimmed += '?';
+  } else if (!/[.?!]$/.test(trimmed)) {
+    trimmed += '.';
+  }
+
+  return trimmed;
+}
 
 function handleSubmit() {
-  const formattedSetup = isKnockKnock.value
-      ? setupText.value.split('\n').map(line => line.trim()).filter(Boolean).join(' \\n ')
-      : setupText.value
+  const formattedSetup =
+      type.value === 'knock-knock'
+          ? (() => {
+            const parts = setupText.value
+                .split('\n')
+                .map(line => capitalize(line.trim()))
+                .filter(Boolean);
+            let joined = parts.join('. ');
+            if (!/[.?!]$/.test(joined)) {
+              joined += '.';
+            }
+            return joined;
+          })()
+          : normalizeSetup(setupText.value);
 
   store.addCustomJoke({
     type: type.value,
     setup: formattedSetup,
-    punchline: punchline.value,
-  })
+    punchline: capitalize(punchline.value.trim()),
+  });
 
   router.push({ path: '/', query: { page: 1 } });
 
-  // Reset form
-  setupText.value = ''
-  punchline.value = ''
-  type.value = ''
-
+  setupText.value = '';
+  punchline.value = '';
+  type.value = '';
 }
 </script>
+
 
 <template>
   <form @submit.prevent="handleSubmit" class="space-y-4 bg-gray-100 p-6 rounded shadow">
@@ -51,19 +76,15 @@ function handleSubmit() {
 
     <div>
       <label class="block mb-1 font-semibold">Setup</label>
-      <textarea
-          v-if="isKnockKnock"
-          v-model="setupText"
-          class="w-full p-2 border rounded"
-          rows="4"
-          placeholder="Enter each line of the setup on a new line"
-      ></textarea>
       <input
-          v-else
           v-model="setupText"
           class="w-full p-2 border rounded"
-          placeholder="Setup"
+          placeholder="Enter setup"
+          required
       />
+      <p v-if="type === 'knock-knock'" class="text-sm text-gray-600 mt-1">
+        Format example: <em>Knock knock. Who's there? Boo. Boo who?</em>
+      </p>
     </div>
 
     <div>
@@ -71,11 +92,13 @@ function handleSubmit() {
       <input
           v-model="punchline"
           class="w-full p-2 border rounded"
-          placeholder="Punchline"
+          placeholder="Enter punchline"
           required
       />
     </div>
 
-    <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded">Submit Joke</button>
+    <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded">
+      Submit Joke
+    </button>
   </form>
 </template>
