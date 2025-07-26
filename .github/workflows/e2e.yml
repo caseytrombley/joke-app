@@ -13,27 +13,24 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Use Node.js 18.x (absolutely enforced)
+      - name: Use Node.js 18 (force exact match, no cache)
         uses: actions/setup-node@v4
         with:
-          node-version: '18'
-          cache: 'npm'
+          node-version: '18.19.1'
+          check-latest: true
 
-      - name: Force clear previous build artifacts
-        run: rm -rf node_modules dist .vite
+      - name: Verify Node.js version
+        run: node -v
 
-      - name: Install dependencies fresh
+      - name: Install dependencies
         run: npm install
 
-      - name: Verify Node version (sanity check)
-        run: node -v  # should be v18.x
-
-      - name: Build project (this WILL work now)
+      - name: Build the project
         run: npm run build
 
-      - name: Start preview server and run Cypress tests
+      - name: Run Cypress E2E Tests
         uses: cypress-io/github-action@v6
         with:
           start: npm run preview
-          wait-on: 'http://localhost:4173'
+          wait-on: http://localhost:4173
           wait-on-timeout: 90
