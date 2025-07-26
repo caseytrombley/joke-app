@@ -66,13 +66,17 @@ function handleSubmit() {
   <form @submit.prevent="handleSubmit" class="space-y-4">
     <div>
       <label class="block mb-1 font-semibold">Type</label>
-      <select v-model="type" required class="w-full p-2 border rounded">
+      <select
+          v-model="type"
+          required
+          class="w-full p-2 border rounded"
+          data-testid="joke-type"
+      >
         <option value="">-- Select Type --</option>
         <option value="general">General</option>
         <option value="knock-knock">Knock Knock</option>
         <option value="programming">Programming</option>
         <option value="dad">Dad Joke</option>
-
       </select>
     </div>
 
@@ -83,6 +87,7 @@ function handleSubmit() {
           class="w-full p-2 border rounded"
           placeholder="Enter setup"
           required
+          data-testid="joke-setup"
       />
       <p v-if="type === 'knock-knock'" class="text-sm text-gray-600 mt-1">
         Format example: <em>Knock knock. Who's there? Boo. Boo who?</em>
@@ -96,12 +101,17 @@ function handleSubmit() {
           class="w-full p-2 border rounded"
           placeholder="Enter punchline"
           required
+          data-testid="joke-punchline"
       />
     </div>
 
-    <button type="submit" class="inline-block mt-4 px-6 py-3 bg-pink-600 text-white rounded-lg shadow hover:bg-pink-700 transition"
+    <button
+        type="submit"
+        class="inline-block mt-4 px-6 py-3 bg-pink-600 text-white rounded-lg shadow hover:bg-pink-700 transition"
+        data-testid="submit-joke"
     >
       Submit Joke
     </button>
   </form>
 </template>
+
