@@ -13,7 +13,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Set up Node.js
+      - name: Use Node.js 18 (for Vite compatibility)
         uses: actions/setup-node@v4
         with:
           node-version: 18
@@ -21,12 +21,12 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Build the project
+      - name: Build project with Vite
         run: npm run build
 
-      - name: Start preview server and run Cypress tests
+      - name: Run Cypress E2E Tests
         uses: cypress-io/github-action@v6
         with:
           start: npm run preview
-          wait-on: 'http://localhost:4173'
-          wait-on-timeout: 60
+          wait-on: http://localhost:4173
+          wait-on-timeout: 90
