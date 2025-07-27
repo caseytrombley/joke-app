@@ -15,7 +15,7 @@
             Home
           </RouterLink>
           <RouterLink
-              to="/add-joke"
+              :to="{ path: '/', query: { add: 'true' } }"
               class="hover:underline transition-opacity opacity-90 hover:opacity-100"
           >
             Add Joke

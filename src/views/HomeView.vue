@@ -25,14 +25,14 @@
     </div>
 
     <div v-else>
-      <div class="grid gap-4">
+      <transition-group name="slide-fade" tag="div" class="grid gap-4">
         <JokeCard
             v-for="joke in paginatedJokes"
             :key="joke.id"
             :joke="joke"
             @delete="requestDelete"
         />
-      </div>
+      </transition-group>
 
       <Pagination
           :current-page="currentPage"
@@ -46,6 +46,10 @@
         @cancel="showModal = false"
         @confirm="confirmDelete"
     />
+
+    <AddJokeModal :visible="showAddModal" @close="closeAddModal">
+      <AddJokeForm @added="handleJokeAdded" />
+    </AddJokeModal>
   </div>
 </template>
 
@@ -53,11 +57,14 @@
 import { onMounted, computed, ref, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useJokeStore } from '../stores/jokeStore';
+
 import JokeCard from '../components/JokeCard.vue';
 import Pagination from '../components/Pagination.vue';
 import ConfirmModal from '../components/ConfirmModal.vue';
 import JokeFilters from "@/components/JokeFilters.vue";
 import AppHero from "@/components/AppHero.vue";
+import AddJokeForm from "@/components/AddJokeForm.vue";
+import AddJokeModal from "@/components/AddJokeModal.vue";
 
 const store = useJokeStore();
 const route = useRoute();
@@ -66,7 +73,9 @@ const router = useRouter();
 const isLoading = ref(true);
 const selectedType = ref('all');
 const sortByRating = ref(false);
+
 const showModal = ref(false);
+const showAddModal = ref(false);
 const jokeToDelete = ref(null);
 
 function requestDelete(joke) {
@@ -82,6 +91,16 @@ function confirmDelete() {
   }
 }
 
+function closeAddModal() {
+  router.replace({ path: '/', query: { ...route.query, add: undefined } });
+}
+
+function handleJokeAdded() {
+  closeAddModal();
+  // Optional: scroll to top
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
 onMounted(async () => {
   if (!store.jokes.length) {
     await store.fetchJokes();
@@ -95,19 +114,25 @@ onMounted(async () => {
   }
 
   isLoading.value = false;
+
+  // Open add modal if ?add=true
+  if (route.query.add === 'true') {
+    showAddModal.value = true;
+  }
 });
 
-watch(
-    () => route.query.page,
-    (newPage) => {
-      const pageNum = parseInt(newPage, 10);
-      if (!isNaN(pageNum)) {
-        store.setPage(pageNum);
-      } else {
-        store.setPage(1);
-      }
-    }
-);
+watch(() => route.query.add, (val) => {
+  showAddModal.value = val === 'true';
+});
+
+watch(() => route.query.page, (newPage) => {
+  const pageNum = parseInt(newPage, 10);
+  if (!isNaN(pageNum)) {
+    store.setPage(pageNum);
+  } else {
+    store.setPage(1);
+  }
+});
 
 const jokeTypes = computed(() => {
   const types = new Set(store.jokes.map(j => j.type));
@@ -140,3 +165,13 @@ const totalPages = computed(() =>
 const currentPage = computed(() => store.currentPage);
 const jokes = computed(() => store.jokes);
 </script>
+
+<style scoped>
+.slide-fade-enter-active {
+  transition: all 0.4s ease;
+}
+.slide-fade-enter-from {
+  opacity: 0;
+  transform: translateY(-10px);
+}
+</style>
