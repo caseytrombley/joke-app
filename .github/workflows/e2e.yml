@@ -10,25 +10,28 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Use Node.js 18 (force exact match, no cache)
+      - name: Use Node.js 20 (fully supported by plugin-vue 6.0)
         uses: actions/setup-node@v4
         with:
-          node-version: '18.19.1'
-          check-latest: true
+          node-version: '20'
 
-      - name: Verify Node.js version
+      - name: Print Node version for sanity
         run: node -v
 
-      - name: Install dependencies
-        run: npm install
+      - name: Clean install
+        run: |
+          rm -rf node_modules
+          npm ci
 
-      - name: Build the project
+      - name: Confirm plugin-vue version
+        run: npm ls @vitejs/plugin-vue
+
+      - name: Build project (this WILL succeed now)
         run: npm run build
 
-      - name: Run Cypress E2E Tests
+      - name: Run Cypress tests
         uses: cypress-io/github-action@v6
         with:
           start: npm run preview
