@@ -6,8 +6,14 @@ const emit = defineEmits(['added', 'done']);
 
 const setupText = ref('');
 const punchline = ref('');
-const type = ref('general'); // default to 'general'
+const type = ref('general');
 const showSuccess = ref(false);
+
+// Validation errors
+const errors = ref({
+  setup: '',
+  punchline: ''
+});
 
 function capitalize(text) {
   if (!text) return '';
@@ -36,7 +42,28 @@ function formatOption(value) {
       .join(' ');
 }
 
+function validateForm() {
+  let isValid = true;
+  if (!setupText.value.trim()) {
+    errors.value.setup = 'Setup is required.';
+    isValid = false;
+  } else {
+    errors.value.setup = '';
+  }
+
+  if (!punchline.value.trim()) {
+    errors.value.punchline = 'Punchline is required.';
+    isValid = false;
+  } else {
+    errors.value.punchline = '';
+  }
+
+  return isValid;
+}
+
 function handleSubmit() {
+  if (!validateForm()) return;
+
   const formattedSetup =
       type.value === 'knock-knock'
           ? (() => {
@@ -67,7 +94,6 @@ function handleSubmit() {
     emit('added', newJoke);
     emit('done');
 
-    // reset form after closing
     setupText.value = '';
     punchline.value = '';
     type.value = 'general';
@@ -114,7 +140,6 @@ function handleSubmit() {
                   type="radio"
                   :value="option"
                   v-model="type"
-                  required
                   :id="`joke-type-${option}`"
                   class="sr-only peer"
                   data-testid="joke-type"
@@ -127,19 +152,21 @@ function handleSubmit() {
               </label>
             </div>
           </div>
-
         </div>
 
         <div>
           <label class="block mb-1 font-semibold" for="joke-setup">Setup</label>
           <input
               v-model="setupText"
-              data-testid="joke-setup"
               id="joke-setup"
-              class="w-full p-2 border rounded"
+              data-testid="joke-setup"
+              :class="[
+              'w-full p-2 border rounded',
+              errors.setup ? 'border-red-500 focus:ring-red-500' : 'border-gray-300 focus:ring-pink-500'
+            ]"
               placeholder="Enter setup"
-              required
           />
+          <p v-if="errors.setup" class="text-sm text-red-600 mt-1">{{ errors.setup }}</p>
           <p
               v-if="type === 'knock-knock'"
               class="text-sm text-gray-600 mt-1"
@@ -152,12 +179,15 @@ function handleSubmit() {
           <label class="block mb-1 font-semibold" for="joke-punchline">Punchline</label>
           <input
               v-model="punchline"
-              data-testid="joke-punchline"
               id="joke-punchline"
-              class="w-full p-2 border rounded"
+              data-testid="joke-punchline"
+              :class="[
+              'w-full p-2 border rounded',
+              errors.punchline ? 'border-red-500 focus:ring-red-500' : 'border-gray-300 focus:ring-pink-500'
+            ]"
               placeholder="Enter punchline"
-              required
           />
+          <p v-if="errors.punchline" class="text-sm text-red-600 mt-1">{{ errors.punchline }}</p>
         </div>
 
         <button
