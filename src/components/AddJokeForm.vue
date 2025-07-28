@@ -78,7 +78,6 @@ function handleSubmit() {
 
 <template>
   <div class="relative min-h-[380px]">
-    <!-- Success Overlay -->
     <transition name="fade">
       <div
           v-if="showSuccess"
@@ -89,7 +88,6 @@ function handleSubmit() {
       </div>
     </transition>
 
-    <!-- Joke Form -->
     <div>
       <h1 class="text-4xl font-extrabold text-gray-800 flex items-center justify-center gap-2">
         <Plus class="w-7 h-7 text-pink-600" />
@@ -104,7 +102,6 @@ function handleSubmit() {
           class="space-y-4 mt-6"
           :class="showSuccess ? 'opacity-0 cursor-not-allowed' : ''"
       >
-        <!-- Joke Type Radios -->
         <div>
           <label class="block mb-3 font-semibold">Type</label>
           <div class="flex flex-wrap gap-3">
@@ -130,7 +127,6 @@ function handleSubmit() {
           </div>
         </div>
 
-        <!-- Setup Field -->
         <div>
           <label class="block mb-1 font-semibold">Setup</label>
           <input
@@ -148,7 +144,6 @@ function handleSubmit() {
           </p>
         </div>
 
-        <!-- Punchline Field -->
         <div>
           <label class="block mb-1 font-semibold">Punchline</label>
           <input
@@ -160,7 +155,6 @@ function handleSubmit() {
           />
         </div>
 
-        <!-- Submit Button -->
         <button
             type="submit"
             data-testid="submit-joke"
