@@ -105,33 +105,37 @@ function handleSubmit() {
         <div>
           <label class="block mb-3 font-semibold">Type</label>
           <div class="flex flex-wrap gap-3">
-            <label
+            <div
                 v-for="option in ['general', 'knock-knock', 'programming', 'dad']"
                 :key="option"
-                class="cursor-pointer"
+                class="flex-none"
             >
               <input
                   type="radio"
                   :value="option"
                   v-model="type"
                   required
+                  :id="`joke-type-${option}`"
                   class="sr-only peer"
                   data-testid="joke-type"
               />
-              <span
-                  class="px-4 py-2 rounded-lg border border-gray-300 peer-checked:bg-teal-500 peer-checked:text-white peer-checked:border-teal-500 transition hover:shadow-sm"
+              <label
+                  :for="`joke-type-${option}`"
+                  class="block px-4 py-2 rounded-lg border border-gray-300 peer-checked:bg-teal-500 peer-checked:text-white peer-checked:border-teal-500 transition hover:shadow-sm cursor-pointer text-center"
               >
                 {{ formatOption(option) }}
-              </span>
-            </label>
+              </label>
+            </div>
           </div>
+
         </div>
 
         <div>
-          <label class="block mb-1 font-semibold">Setup</label>
+          <label class="block mb-1 font-semibold" for="joke-setup">Setup</label>
           <input
               v-model="setupText"
               data-testid="joke-setup"
+              id="joke-setup"
               class="w-full p-2 border rounded"
               placeholder="Enter setup"
               required
@@ -145,10 +149,11 @@ function handleSubmit() {
         </div>
 
         <div>
-          <label class="block mb-1 font-semibold">Punchline</label>
+          <label class="block mb-1 font-semibold" for="joke-punchline">Punchline</label>
           <input
               v-model="punchline"
               data-testid="joke-punchline"
+              id="joke-punchline"
               class="w-full p-2 border rounded"
               placeholder="Enter punchline"
               required

@@ -10,7 +10,7 @@
     <transition name="fade">
       <div
           v-show="visible"
-          class="bg-white w-full max-w-xl mx-4 rounded-lg shadow-lg p-6 relative animate-fade-in"
+          class="bg-white w-full max-w-xl mx-4 rounded-lg shadow-lg p-6 pt-8 sm:pt-6 pr-12 sm:pr-6 relative animate-fade-in"
       >
         <button
             @click="$emit('close')"
