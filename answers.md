@@ -33,3 +33,5 @@ These side effects are intentional and scoped, such as adding a new joke to the 
 
 Can they be avoided? No, not really but they could be put into a utility function or plugin to separate concerns. Here it seemed appropriate to keep together because I wanted to submit and persist the joke and it's handled in a predictable way.
 
+### Also one more thing... 
+I only chose to persist to localStorage as a temporary solution. In a future improvement, I would like to use a database and proper backend setup, but for now I was focused on developing the front end so it's sort of a prototype persistence of jokes.
