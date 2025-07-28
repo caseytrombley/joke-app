@@ -6,7 +6,7 @@ const emit = defineEmits(['added', 'done']);
 
 const setupText = ref('');
 const punchline = ref('');
-const type = ref('general');
+const type = ref('general'); // default to 'general'
 const showSuccess = ref(false);
 
 function capitalize(text) {
@@ -70,7 +70,7 @@ function handleSubmit() {
     // reset form after closing
     setupText.value = '';
     punchline.value = '';
-    type.value = '';
+    type.value = 'general';
     showSuccess.value = false;
   }, 1500);
 }
@@ -78,6 +78,7 @@ function handleSubmit() {
 
 <template>
   <div class="relative min-h-[380px]">
+    <!-- Success Overlay -->
     <transition name="fade">
       <div
           v-if="showSuccess"
@@ -88,6 +89,7 @@ function handleSubmit() {
       </div>
     </transition>
 
+    <!-- Joke Form -->
     <div>
       <h1 class="text-4xl font-extrabold text-gray-800 flex items-center justify-center gap-2">
         <Plus class="w-7 h-7 text-pink-600" />
@@ -102,6 +104,7 @@ function handleSubmit() {
           class="space-y-4 mt-6"
           :class="showSuccess ? 'opacity-0 cursor-not-allowed' : ''"
       >
+        <!-- Joke Type Radios -->
         <div>
           <label class="block mb-3 font-semibold">Type</label>
           <div class="flex flex-wrap gap-3">
@@ -116,6 +119,7 @@ function handleSubmit() {
                   v-model="type"
                   required
                   class="sr-only peer"
+                  data-testid="joke-type"
               />
               <span
                   class="px-4 py-2 rounded-lg border border-gray-300 peer-checked:bg-teal-500 peer-checked:text-white peer-checked:border-teal-500 transition hover:shadow-sm"
@@ -126,32 +130,40 @@ function handleSubmit() {
           </div>
         </div>
 
-
+        <!-- Setup Field -->
         <div>
           <label class="block mb-1 font-semibold">Setup</label>
           <input
               v-model="setupText"
+              data-testid="joke-setup"
               class="w-full p-2 border rounded"
               placeholder="Enter setup"
               required
           />
-          <p v-if="type === 'knock-knock'" class="text-sm text-gray-600 mt-1">
+          <p
+              v-if="type === 'knock-knock'"
+              class="text-sm text-gray-600 mt-1"
+          >
             Format example: <em>Knock knock. Who's there? Boo. Boo who?</em>
           </p>
         </div>
 
+        <!-- Punchline Field -->
         <div>
           <label class="block mb-1 font-semibold">Punchline</label>
           <input
               v-model="punchline"
+              data-testid="joke-punchline"
               class="w-full p-2 border rounded"
               placeholder="Enter punchline"
               required
           />
         </div>
 
+        <!-- Submit Button -->
         <button
             type="submit"
+            data-testid="submit-joke"
             class="inline-block mt-4 px-6 py-3 bg-pink-600 text-white rounded-lg shadow hover:bg-pink-700 transition"
         >
           Submit Joke

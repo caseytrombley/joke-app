@@ -1,6 +1,6 @@
 <template>
   <div
-      class="relative space-y-2 p-4 rounded-lg shadow transition hover:shadow-md"
+      class="joke-card relative space-y-2 p-4 rounded-lg shadow transition hover:shadow-md"
       :class="joke.isCustom ? 'bg-pink-100' : 'bg-gray-100'"
   >
 
