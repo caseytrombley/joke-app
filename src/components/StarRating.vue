@@ -3,8 +3,8 @@
     <button
         v-for="n in 5"
         :key="n"
-        @click="$emit('rate', n)"
-        class="text-yellow-500"
+        @click="handleClick(n)"
+        class="focus:outline-none"
     >
       <span :class="n <= modelValue ? 'text-yellow-500' : 'text-gray-300'">★</span>
     </button>
@@ -12,8 +12,17 @@
 </template>
 
 <script setup>
-defineProps({
+const props = defineProps({
   modelValue: Number,
 });
-defineEmits(['rate']);
+
+const emit = defineEmits(['rate']);
+
+function handleClick(n) {
+  if (props.modelValue === n) {
+    emit('rate', 0); // clear rating
+  } else {
+    emit('rate', n);
+  }
+}
 </script>
