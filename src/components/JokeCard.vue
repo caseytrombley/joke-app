@@ -7,7 +7,7 @@
     <div v-if="joke.isCustom" class="absolute top-0 left-0 text-xs bg-pink-400 text-white px-2 py-0.5 rounded-tl-lg rounded-br-lg">
       User Submitted
     </div>
-    <div v-if="joke.isCustom" class="card-header flex items-center justify-end mb-4">
+    <div v-if="joke.isCustom" class="card-header flex items-center justify-end mb-2">
 
 
       <div class="flex gap-2">

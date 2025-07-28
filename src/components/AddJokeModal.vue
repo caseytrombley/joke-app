@@ -9,7 +9,6 @@
           class="bg-white w-full max-w-xl mx-4 rounded-lg shadow-lg p-6 relative animate-fade-in"
           v-show="visible"
       >
-        <!-- Close button -->
         <button
             @click="$emit('close')"
             class="absolute top-3 right-3 text-gray-500 hover:text-black text-xl"

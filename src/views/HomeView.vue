@@ -180,10 +180,10 @@ const totalPages = computed(() =>
 const currentPage = computed(() => store.currentPage);
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 .fade-slide-enter-active,
 .fade-slide-leave-active {
-  transition: all 0.4s ease;
+  transition: all 0.3s ease;
 }
 .fade-slide-enter-from {
   opacity: 0;
