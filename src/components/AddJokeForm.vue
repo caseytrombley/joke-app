@@ -1,9 +1,7 @@
 <script setup>
 import { ref } from 'vue';
-import { useJokeStore } from '@/stores/jokeStore.js';
 
-const store = useJokeStore();
-const emit = defineEmits(['added']);
+const emit = defineEmits(['added', 'done']);
 
 const setupText = ref('');
 const punchline = ref('');
@@ -52,28 +50,31 @@ function handleSubmit() {
     punchline: capitalize(punchline.value.trim()),
     isCustom: true,
     id: crypto.randomUUID(),
+    highlight: true,
   };
-
-  store.addCustomJoke(newJoke);
 
   showSuccess.value = true;
 
   setTimeout(() => {
     emit('added', newJoke);
-    showSuccess.value = false;
+    emit('done');
+
+    // reset form after closing
     setupText.value = '';
     punchline.value = '';
     type.value = '';
+    showSuccess.value = false;
   }, 1500);
 }
 </script>
 
 <template>
-  <div class="relative min-h-[300px]">
+  <div class="relative min-h-[380px]">
+    <!-- Success Overlay -->
     <transition name="fade">
       <div
-          v-show="showSuccess"
-          class="absolute inset-0 flex flex-col items-center justify-center bg-white rounded-lg z-10"
+          v-if="showSuccess"
+          class="absolute inset-0 z-10 bg-white rounded-lg flex flex-col items-center justify-center"
       >
         <svg
             class="w-16 h-16 text-green-500 animate-bounce mb-4"
@@ -88,20 +89,19 @@ function handleSubmit() {
       </div>
     </transition>
 
-    <transition name="fade">
-      <form
-          v-show="!showSuccess"
-          @submit.prevent="handleSubmit"
-          class="space-y-4 transition-opacity"
-      >
+    <!-- Joke Form -->
+    <div>
+      <h1 class="text-4xl font-extrabold text-gray-800 flex items-center justify-center gap-2">
+        ➕ <span>Add a Joke</span>
+      </h1>
+      <p class="text-gray-600 text-base mt-2 text-center">
+        Got a zinger? Drop it here and share the laughs with the world.
+      </p>
+
+      <form @submit.prevent="handleSubmit" class="space-y-4 mt-6">
         <div>
           <label class="block mb-1 font-semibold">Type</label>
-          <select
-              v-model="type"
-              required
-              class="w-full p-2 border rounded"
-              data-testid="joke-type"
-          >
+          <select v-model="type" required class="w-full p-2 border rounded">
             <option value="">-- Select Type --</option>
             <option value="general">General</option>
             <option value="knock-knock">Knock Knock</option>
@@ -117,12 +117,8 @@ function handleSubmit() {
               class="w-full p-2 border rounded"
               placeholder="Enter setup"
               required
-              data-testid="joke-setup"
           />
-          <p
-              v-if="type === 'knock-knock'"
-              class="text-sm text-gray-600 mt-1"
-          >
+          <p v-if="type === 'knock-knock'" class="text-sm text-gray-600 mt-1">
             Format example: <em>Knock knock. Who's there? Boo. Boo who?</em>
           </p>
         </div>
@@ -134,19 +130,17 @@ function handleSubmit() {
               class="w-full p-2 border rounded"
               placeholder="Enter punchline"
               required
-              data-testid="joke-punchline"
           />
         </div>
 
         <button
             type="submit"
             class="inline-block mt-4 px-6 py-3 bg-pink-600 text-white rounded-lg shadow hover:bg-pink-700 transition"
-            data-testid="submit-joke"
         >
           Submit Joke
         </button>
       </form>
-    </transition>
+    </div>
   </div>
 </template>
 
@@ -158,9 +152,5 @@ function handleSubmit() {
 .fade-enter-from,
 .fade-leave-to {
   opacity: 0;
-}
-
-.min-h-\[300px\] {
-  min-height: 300px;
 }
 </style>
