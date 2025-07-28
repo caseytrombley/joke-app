@@ -1,11 +1,12 @@
 <script setup>
 import { ref } from 'vue';
+import { Plus, CheckCircle } from 'lucide-vue-next';
 
 const emit = defineEmits(['added', 'done']);
 
 const setupText = ref('');
 const punchline = ref('');
-const type = ref('');
+const type = ref('general');
 const showSuccess = ref(false);
 
 function capitalize(text) {
@@ -26,6 +27,13 @@ function normalizeSetup(text) {
   }
 
   return trimmed;
+}
+
+function formatOption(value) {
+  return value
+      .split('-')
+      .map(w => w[0].toUpperCase() + w.slice(1))
+      .join(' ');
 }
 
 function handleSubmit() {
@@ -70,29 +78,20 @@ function handleSubmit() {
 
 <template>
   <div class="relative min-h-[380px]">
-    <!-- Success Overlay -->
     <transition name="fade">
       <div
           v-if="showSuccess"
           class="absolute inset-0 z-10 bg-white rounded-lg flex flex-col items-center justify-center"
       >
-        <svg
-            class="w-16 h-16 text-green-500 animate-bounce mb-4"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            viewBox="0 0 24 24"
-        >
-          <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
-        </svg>
-        <p class="text-lg font-semibold text-green-700">Joke added!</p>
+        <CheckCircle class="w-16 h-16 text-green-700 mb-4 animate-bounce" />
+        <p class="text-lg font-semibold text-green-800">Joke added!</p>
       </div>
     </transition>
 
-    <!-- Joke Form -->
     <div>
       <h1 class="text-4xl font-extrabold text-gray-800 flex items-center justify-center gap-2">
-        ➕ <span>Add a Joke</span>
+        <Plus class="w-7 h-7 text-pink-600" />
+        <span>Add a Joke</span>
       </h1>
       <p class="text-gray-600 text-base mt-2 text-center">
         Got a zinger? Drop it here and share the laughs with the world.
@@ -104,15 +103,29 @@ function handleSubmit() {
           :class="showSuccess ? 'opacity-0 cursor-not-allowed' : ''"
       >
         <div>
-          <label class="block mb-1 font-semibold">Type</label>
-          <select v-model="type" required class="w-full p-2 border rounded">
-            <option value="">-- Select Type --</option>
-            <option value="general">General</option>
-            <option value="knock-knock">Knock Knock</option>
-            <option value="programming">Programming</option>
-            <option value="dad">Dad Joke</option>
-          </select>
+          <label class="block mb-3 font-semibold">Type</label>
+          <div class="flex flex-wrap gap-3">
+            <label
+                v-for="option in ['general', 'knock-knock', 'programming', 'dad']"
+                :key="option"
+                class="cursor-pointer"
+            >
+              <input
+                  type="radio"
+                  :value="option"
+                  v-model="type"
+                  required
+                  class="sr-only peer"
+              />
+              <span
+                  class="px-4 py-2 rounded-lg border border-gray-300 peer-checked:bg-teal-500 peer-checked:text-white peer-checked:border-teal-500 transition hover:shadow-sm"
+              >
+                {{ formatOption(option) }}
+              </span>
+            </label>
+          </div>
         </div>
+
 
         <div>
           <label class="block mb-1 font-semibold">Setup</label>

@@ -30,12 +30,12 @@
 
     <div v-if="isEditing">
       <label class="block font-semibold">Setup:</label>
-      <input v-model="editSetup" class="w-full p-2 border rounded" />
+      <input v-model="editSetup" class="w-full p-2 border rounded bg-white" />
 
       <label class="block font-semibold mt-2">Punchline:</label>
-      <input v-model="editPunchline" class="w-full p-2 border rounded" />
+      <input v-model="editPunchline" class="w-full p-2 border rounded bg-white" />
 
-      <div class="flex justify-end gap-2 mt-2">
+      <div class="flex justify-end gap-2 mt-4">
         <button
             @click="cancelEdit"
             class="px-3 py-1 border rounded bg-white hover:bg-gray-200 transition"
