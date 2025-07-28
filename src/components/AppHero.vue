@@ -14,7 +14,7 @@
       </p>
 
       <RouterLink
-          to="/add-joke"
+          :to="addJokeLink"
           class="inline-block mt-6 px-6 py-3 bg-pink-600 text-white rounded-lg shadow hover:bg-pink-700 transition"
       >
         Submit Your Own Joke
@@ -25,4 +25,7 @@
 
 <script setup>
 import { RouterLink } from 'vue-router';
+import { useAddJokeLink } from '@/composables/useAddJokeLink';
+
+const { addJokeLink } = useAddJokeLink();
 </script>

@@ -3,7 +3,7 @@
     <header class="bg-gray-800 text-white px-6 py-4">
       <div class="max-w-6xl mx-auto flex items-center justify-between">
         <RouterLink to="/" class="text-xl font-bold tracking-wide flex items-center gap-2">
-          <span><img src="/favicon-32x32.png" alt=""></span>
+          <span><img src="/favicon-32x32.png" alt="" /></span>
           <span>Jokester</span>
         </RouterLink>
 
@@ -15,7 +15,7 @@
             Home
           </RouterLink>
           <RouterLink
-              to="/add-joke"
+              :to="addJokeLink"
               class="hover:underline transition-opacity opacity-90 hover:opacity-100"
           >
             Add Joke
@@ -34,5 +34,9 @@
 
 <script setup>
 import { RouterLink, RouterView } from 'vue-router';
-import AppFooter from "@/components/AppFooter.vue";
+import AppFooter from '@/components/AppFooter.vue';
+import { useAddJokeLink } from '@/composables/useAddJokeLink';
+
+const { addJokeLink } = useAddJokeLink();
+
 </script>
