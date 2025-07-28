@@ -98,7 +98,11 @@ function handleSubmit() {
         Got a zinger? Drop it here and share the laughs with the world.
       </p>
 
-      <form @submit.prevent="handleSubmit" class="space-y-4 mt-6">
+      <form
+          @submit.prevent="handleSubmit"
+          class="space-y-4 mt-6"
+          :class="showSuccess ? 'opacity-0 cursor-not-allowed' : ''"
+      >
         <div>
           <label class="block mb-1 font-semibold">Type</label>
           <select v-model="type" required class="w-full p-2 border rounded">
