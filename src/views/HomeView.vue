@@ -1,5 +1,6 @@
 <template>
-  <AppHero @add-joke="showAddModal = true" />
+  <AppHero @add-joke="openAddModal()" />
+
   <div class="max-w-6xl mx-auto p-4 py-6">
     <JokeFilters
         :loading="isLoading"
@@ -25,16 +26,14 @@
     </div>
 
     <div v-else>
-      <div class="grid gap-4">
-        <transition-group name="fade-slide" tag="div" class="grid gap-4">
-          <JokeCard
-              v-for="joke in paginatedJokes"
-              :key="joke.id"
-              :joke="joke"
-              @delete="requestDelete"
-          />
-        </transition-group>
-      </div>
+      <transition-group name="fade-slide" tag="div" class="grid gap-4">
+        <JokeCard
+            v-for="joke in paginatedJokes"
+            :key="joke.id"
+            :joke="joke"
+            @delete="requestDelete"
+        />
+      </transition-group>
 
       <Pagination
           :current-page="currentPage"
@@ -52,13 +51,14 @@
     <AddJokeModal
         :visible="showAddModal"
         @close="closeAddModal"
+        @after-leave="handleAddModalClosed"
     >
       <AddJokeForm
+          ref="addForm"
           @added="handleJokeAdded"
           @done="closeAddModal"
       />
     </AddJokeModal>
-
   </div>
 </template>
 
@@ -84,39 +84,7 @@ const sortByRating = ref(false);
 const showModal = ref(false);
 const showAddModal = ref(false);
 const jokeToDelete = ref(null);
-
-function requestDelete(joke) {
-  jokeToDelete.value = joke;
-  showModal.value = true;
-}
-
-function confirmDelete() {
-  if (jokeToDelete.value) {
-    store.removeCustomJoke(jokeToDelete.value.id);
-    showModal.value = false;
-    jokeToDelete.value = null;
-  }
-}
-
-function closeAddModal() {
-  const query = { ...route.query };
-  delete query.add;
-  router.replace({ query });
-}
-
-function handleJokeAdded(joke) {
-  store.addCustomJoke({ ...joke, isNew: true });
-
-  setTimeout(() => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  }, 100);
-
-  setTimeout(() => {
-    const item = store.jokes.find(j => j.id === joke.id);
-    if (item) item.isNew = false;
-  }, 2000);
-}
-
+const addForm = ref(null);
 
 onMounted(async () => {
   if (!store.jokes.length) {
@@ -137,17 +105,55 @@ watchEffect(() => {
   showAddModal.value = route.query.add === 'true';
 });
 
-watch(
-    () => route.query.page,
-    (newPage) => {
-      const pageNum = parseInt(newPage, 10);
-      if (!isNaN(pageNum)) {
-        store.setPage(pageNum);
-      } else {
-        store.setPage(1);
-      }
-    }
-);
+watch(() => route.query.page, (newPage) => {
+  const pageNum = parseInt(newPage, 10);
+  if (!isNaN(pageNum)) {
+    store.setPage(pageNum);
+  } else {
+    store.setPage(1);
+  }
+});
+
+function openAddModal() {
+  router.replace({ query: { ...route.query, add: 'true' } });
+}
+
+function closeAddModal() {
+  showAddModal.value = false;
+  const query = { ...route.query };
+  delete query.add;
+  router.replace({ query });
+}
+
+function handleAddModalClosed() {
+  addForm.value?.resetForm();
+}
+
+function handleJokeAdded(joke) {
+  store.addCustomJoke({ ...joke, isNew: true });
+
+  setTimeout(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, 100);
+
+  setTimeout(() => {
+    const item = store.jokes.find(j => j.id === joke.id);
+    if (item) item.isNew = false;
+  }, 2000);
+}
+
+function requestDelete(joke) {
+  jokeToDelete.value = joke;
+  showModal.value = true;
+}
+
+function confirmDelete() {
+  if (jokeToDelete.value) {
+    store.removeCustomJoke(jokeToDelete.value.id);
+    showModal.value = false;
+    jokeToDelete.value = null;
+  }
+}
 
 const jokeTypes = computed(() => {
   const types = new Set(store.jokes.map(j => j.type));

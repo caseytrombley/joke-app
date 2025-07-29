@@ -1,16 +1,16 @@
 <template>
   <div
-      v-if="visible"
-      class="fixed inset-0 z-50 bg-black/50 flex items-center justify-center"
-      @keydown.esc="$emit('close')"
-      @click.self="$emit('close')"
+      class="fixed inset-0 z-50 flex items-center justify-center transition-colors duration-300"
+      :class="visible ? 'bg-black/50' : 'bg-transparent pointer-events-none'"
       role="dialog"
       aria-modal="true"
+      @click.self="$emit('close')"
+      @keydown.esc="$emit('close')"
   >
-    <transition name="fade">
+    <transition name="modal-fade" @after-leave="$emit('after-leave')">
       <div
           v-show="visible"
-          class="bg-white w-full max-w-xl mx-4 rounded-lg shadow-lg p-6 pt-8 sm:pt-6 pr-12 sm:pr-6 relative animate-fade-in"
+          class="modal-panel"
       >
         <button
             @click="$emit('close')"
@@ -36,29 +36,45 @@ defineProps({
   },
 });
 
-defineEmits(['close']);
+defineEmits(['close', 'after-leave']);
 </script>
 
-<style lang="scss" scoped>
-.fade-enter-active,
-.fade-leave-active {
-  transition: opacity 0.3s ease;
+<style scoped>
+.modal-panel {
+  background: white;
+  width: 100%;
+  max-width: 36rem;
+  margin: 0 1rem;
+  padding: 1.5rem 3rem 1.5rem 1.5rem;
+  border-radius: 0.5rem;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  position: relative;
+  transition: border-radius 0.4s ease, transform 0.4s ease, opacity 0.4s ease;
 }
-.fade-enter-from,
-.fade-leave-to {
+
+.modal-fade-enter-from {
   opacity: 0;
+  transform: scale(0.9);
+  border-radius: 2rem;
 }
-@keyframes fade-in {
-  from {
-    opacity: 0;
-    transform: scale(0.95);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1);
-  }
+.modal-fade-enter-to {
+  opacity: 1;
+  transform: scale(1);
+  border-radius: 0.5rem;
 }
-.animate-fade-in {
-  animation: fade-in 0.3s ease-out;
+.modal-fade-leave-from {
+  opacity: 1;
+  transform: scale(1);
+  border-radius: 0.5rem;
+}
+.modal-fade-leave-to {
+  opacity: 0;
+  transform: scale(0.3);
+  border-radius: 9999px;
+}
+
+.modal-fade-enter-active,
+.modal-fade-leave-active {
+  transition: all 0.4s ease;
 }
 </style>
