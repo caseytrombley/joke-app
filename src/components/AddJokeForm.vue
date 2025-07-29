@@ -92,7 +92,7 @@ function handleSubmit() {
   };
 
   showSuccess.value = true;
-  startEmojiAnim();
+  startEmojiAnim(); //laughing emoji animation starts
 
   setTimeout(() => {
     emit('added', newJoke);
@@ -102,7 +102,7 @@ function handleSubmit() {
     punchline.value = '';
     type.value = 'general';
     showSuccess.value = false;
-    stopEmojiAnim();
+    stopEmojiAnim(); //kill the animation
   }, 3000);
 }
 </script>

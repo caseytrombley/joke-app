@@ -1,11 +1,9 @@
 <template>
   <section class="relative overflow-hidden bg-gradient-to-br from-pink-100 via-red-100 to-yellow-100 py-16 px-4">
-    <!-- Emoji Container -->
     <div class="absolute inset-0 pointer-events-none z-0">
       <div ref="emojiContainer" class="w-full h-full"></div>
     </div>
 
-    <!-- Main Content -->
     <div class="relative z-10 max-w-4xl mx-auto text-center space-y-4">
       <div class="text-6xl">🎪</div>
 
@@ -34,43 +32,36 @@ import { RouterLink } from 'vue-router';
 import { useAddJokeLink } from '@/composables/useAddJokeLink';
 import { onMounted, ref, nextTick, onBeforeUnmount } from 'vue';
 import { gsap } from 'gsap';
+import { useAnimatedEmoji } from '@/composables/useAnimatedEmoji';
 
 const { addJokeLink } = useAddJokeLink();
 const emojiContainer = ref(null);
 
-const emojiFrames = ['😄', '😊', '😆', '😂', '🤣', '😅'];
+const { emojiAnimation, startEmojiAnim, stopEmojiAnim } = useAnimatedEmoji();
+startEmojiAnim(); //start animation
+
 const maxEmojis = 10;
 const emojiIntervals = new Map();
-
-let spawnInterval;
-
-// Use 12 lanes (like a grid); track which lanes are "occupied"
-const lanes = Array(12).fill(false); // false = free
+const lanes = Array(12).fill(false);
 
 function getFreeLane() {
-  const freeIndexes = lanes
-      .map((used, i) => (!used ? i : null))
-      .filter(i => i !== null);
-  if (freeIndexes.length === 0) return null;
-  return freeIndexes[Math.floor(Math.random() * freeIndexes.length)];
+  const freeIndexes = lanes.map((used, i) => (!used ? i : null)).filter(i => i !== null);
+  return freeIndexes.length ? freeIndexes[Math.floor(Math.random() * freeIndexes.length)] : null;
 }
 
-function createEmoji() {
+function fallingEffect() {
   const laneIndex = getFreeLane();
-  if (laneIndex === null) return; // no space
+  if (laneIndex === null) return;
 
   lanes[laneIndex] = true;
 
   const emoji = document.createElement('div');
   emoji.classList.add('emoji');
-  emoji.textContent = emojiFrames[0];
+  emoji.textContent = emojiAnimation.value;
   emoji.style.position = 'absolute';
   emoji.style.fontSize = `${Math.random() * 20 + 80}px`;
   emoji.style.opacity = '0.1';
-
-  // evenly space based on lane
-  const left = (laneIndex / lanes.length) * 100;
-  emoji.style.left = `calc(${left}% + 1vw)`;
+  emoji.style.left = `calc(${(laneIndex / lanes.length) * 100}% + 1vw)`;
   emoji.style.top = '-10%';
   emoji.style.userSelect = 'none';
   emoji.style.pointerEvents = 'none';
@@ -83,28 +74,23 @@ function createEmoji() {
     duration,
     ease: 'none',
     onComplete: () => {
-      clearInterval(emojiIntervals.get(emoji));
-      emojiIntervals.delete(emoji);
       emoji.remove();
-      lanes[laneIndex] = false; // free up the lane
-    },
+      lanes[laneIndex] = false;
+    }
   });
 
-  let frame = 0;
   const interval = setInterval(() => {
-    frame = (frame + 1) % emojiFrames.length;
-    emoji.textContent = emojiFrames[frame];
+    emoji.textContent = emojiAnimation.value;
   }, 300);
-
   emojiIntervals.set(emoji, interval);
 }
 
+let spawnInterval;
 onMounted(async () => {
   await nextTick();
-
   spawnInterval = setInterval(() => {
     if (emojiContainer.value?.children.length < maxEmojis) {
-      createEmoji();
+      fallingEffect();
     }
   }, 700);
 });
@@ -113,8 +99,10 @@ onBeforeUnmount(() => {
   clearInterval(spawnInterval);
   emojiIntervals.forEach(clearInterval);
   emojiIntervals.clear();
+  stopEmojiAnim(); //kill animation
 });
 </script>
+
 
 
 <style scoped>
