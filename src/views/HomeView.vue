@@ -1,5 +1,6 @@
 <template>
-  <AppHero @add-joke="showAddModal = true" />
+  <AppHero @add-joke="openAddModal()" />
+
   <div class="max-w-6xl mx-auto p-4 py-6">
     <JokeFilters
         :loading="isLoading"
@@ -25,16 +26,14 @@
     </div>
 
     <div v-else>
-      <div class="grid gap-4">
-        <transition-group name="fade-slide" tag="div" class="grid gap-4">
-          <JokeCard
-              v-for="joke in paginatedJokes"
-              :key="joke.id"
-              :joke="joke"
-              @delete="requestDelete"
-          />
-        </transition-group>
-      </div>
+      <transition-group name="fade-slide" tag="div" class="grid gap-4">
+        <JokeCard
+            v-for="joke in paginatedJokes"
+            :key="joke.id"
+            :joke="joke"
+            @delete="requestDelete"
+        />
+      </transition-group>
 
       <Pagination
           :current-page="currentPage"
@@ -52,13 +51,14 @@
     <AddJokeModal
         :visible="showAddModal"
         @close="closeAddModal"
+        @after-leave="handleAddModalClosed"
     >
       <AddJokeForm
+          ref="addForm"
           @added="handleJokeAdded"
           @done="closeAddModal"
       />
     </AddJokeModal>
-
   </div>
 </template>
 
@@ -84,40 +84,9 @@ const sortByRating = ref(false);
 const showModal = ref(false);
 const showAddModal = ref(false);
 const jokeToDelete = ref(null);
+const addForm = ref(null);
 
-function requestDelete(joke) {
-  jokeToDelete.value = joke;
-  showModal.value = true;
-}
-
-function confirmDelete() {
-  if (jokeToDelete.value) {
-    store.removeCustomJoke(jokeToDelete.value.id);
-    showModal.value = false;
-    jokeToDelete.value = null;
-  }
-}
-
-function closeAddModal() {
-  const query = { ...route.query };
-  delete query.add;
-  router.replace({ query });
-}
-
-function handleJokeAdded(joke) {
-  store.addCustomJoke({ ...joke, isNew: true });
-
-  setTimeout(() => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  }, 100);
-
-  setTimeout(() => {
-    const item = store.jokes.find(j => j.id === joke.id);
-    if (item) item.isNew = false;
-  }, 2000);
-}
-
-
+// -- Load jokes on mount
 onMounted(async () => {
   if (!store.jokes.length) {
     await store.fetchJokes();
@@ -133,22 +102,68 @@ onMounted(async () => {
   isLoading.value = false;
 });
 
+// -- Watch for `?add=true`
 watchEffect(() => {
   showAddModal.value = route.query.add === 'true';
 });
 
-watch(
-    () => route.query.page,
-    (newPage) => {
-      const pageNum = parseInt(newPage, 10);
-      if (!isNaN(pageNum)) {
-        store.setPage(pageNum);
-      } else {
-        store.setPage(1);
-      }
-    }
-);
+// -- Watch page param
+watch(() => route.query.page, (newPage) => {
+  const pageNum = parseInt(newPage, 10);
+  if (!isNaN(pageNum)) {
+    store.setPage(pageNum);
+  } else {
+    store.setPage(1);
+  }
+});
 
+// -- Handle modal open
+function openAddModal() {
+  router.replace({ query: { ...route.query, add: 'true' } });
+}
+
+// -- Handle modal close (manual or programmatic)
+function closeAddModal() {
+  showAddModal.value = false;
+  const query = { ...route.query };
+  delete query.add;
+  router.replace({ query });
+}
+
+// -- Reset form when modal finishes closing
+function handleAddModalClosed() {
+  addForm.value?.resetForm();
+}
+
+// -- Handle new joke added
+function handleJokeAdded(joke) {
+  store.addCustomJoke({ ...joke, isNew: true });
+
+  setTimeout(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, 100);
+
+  setTimeout(() => {
+    const item = store.jokes.find(j => j.id === joke.id);
+    if (item) item.isNew = false;
+  }, 2000);
+}
+
+// -- Deletion
+function requestDelete(joke) {
+  jokeToDelete.value = joke;
+  showModal.value = true;
+}
+
+function confirmDelete() {
+  if (jokeToDelete.value) {
+    store.removeCustomJoke(jokeToDelete.value.id);
+    showModal.value = false;
+    jokeToDelete.value = null;
+  }
+}
+
+// -- Derived values
 const jokeTypes = computed(() => {
   const types = new Set(store.jokes.map(j => j.type));
   return Array.from(types).sort();

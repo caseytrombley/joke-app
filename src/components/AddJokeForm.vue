@@ -1,10 +1,9 @@
 <script setup>
 import { ref } from 'vue';
-import { Plus, CheckCircle } from 'lucide-vue-next';
+import { Plus } from 'lucide-vue-next';
 import { useAnimatedEmoji } from '@/composables/useAnimatedEmoji.js';
 
 const { emojiAnimation, startEmojiAnim, stopEmojiAnim } = useAnimatedEmoji();
-
 const emit = defineEmits(['added', 'done']);
 
 const setupText = ref('');
@@ -12,7 +11,6 @@ const punchline = ref('');
 const type = ref('general');
 const showSuccess = ref(false);
 
-// Validation errors
 const errors = ref({
   setup: '',
   punchline: ''
@@ -26,7 +24,6 @@ function capitalize(text) {
 function normalizeSetup(text) {
   let trimmed = text.trim();
   trimmed = capitalize(trimmed);
-
   const questionWords = ['What', 'How', 'Who', 'When', 'Where', 'Why'];
   const firstWord = trimmed.split(' ')[0];
   if (questionWords.includes(firstWord) && !/[?]$/.test(trimmed)) {
@@ -34,7 +31,6 @@ function normalizeSetup(text) {
   } else if (!/[.?!]$/.test(trimmed)) {
     trimmed += '.';
   }
-
   return trimmed;
 }
 
@@ -92,39 +88,43 @@ function handleSubmit() {
   };
 
   showSuccess.value = true;
-  startEmojiAnim(); //laughing emoji animation starts
+  startEmojiAnim();
 
   setTimeout(() => {
     emit('added', newJoke);
     emit('done');
-
-    setupText.value = '';
-    punchline.value = '';
-    type.value = 'general';
-    showSuccess.value = false;
-    stopEmojiAnim(); //kill the animation
+    // Wait for parent to call resetForm() after modal animation
   }, 3000);
 }
+
+function resetForm() {
+  setupText.value = '';
+  punchline.value = '';
+  type.value = 'general';
+  showSuccess.value = false;
+  stopEmojiAnim();
+}
+
+defineExpose({ resetForm });
 </script>
 
 <template>
   <div class="relative min-h-[380px]">
-    <transition name="fade">
-      <div
-          v-if="showSuccess"
-          class="absolute inset-0 z-10 bg-white rounded-lg flex flex-col items-center justify-center"
-      >
-<!--        <CheckCircle class="w-16 h-16 text-green-700 mb-4 animate-bounce" />-->
-
-
-        <div class="text-8xl mb-4">
-          {{ emojiAnimation }}
-        </div>
+    <div
+        v-if="showSuccess"
+        class="absolute inset-0 z-10 bg-white rounded-full flex items-center justify-center overflow-hidden"
+        style="clip-path: circle(50% at center);"
+    >
+      <div class="success-wrapper text-center">
+        <div class="text-8xl mb-4">{{ emojiAnimation }}</div>
         <p class="text-xl font-semibold text-pink-600 animate-bounce">Joke added!</p>
       </div>
-    </transition>
+    </div>
 
-    <div>
+
+
+    <!-- Form content -->
+    <div v-if="!showSuccess">
       <h1 class="text-4xl font-extrabold text-gray-800 flex items-center justify-center gap-2">
         <Plus class="w-7 h-7 text-pink-600" />
         <span>Add a Joke</span>
@@ -133,12 +133,7 @@ function handleSubmit() {
         Got a zinger? Drop it here and share the laughs with the world.
       </p>
 
-
-      <form
-          @submit.prevent="handleSubmit"
-          class="space-y-4 mt-6"
-          :class="showSuccess ? 'opacity-0 cursor-not-allowed' : ''"
-      >
+      <form @submit.prevent="handleSubmit" class="space-y-4 mt-6">
         <div>
           <label class="block mb-3 font-semibold">Type</label>
           <div class="flex flex-wrap gap-3">
@@ -178,10 +173,7 @@ function handleSubmit() {
               placeholder="Enter setup"
           />
           <p v-if="errors.setup" class="text-sm text-red-600 mt-1">{{ errors.setup }}</p>
-          <p
-              v-if="type === 'knock-knock'"
-              class="text-sm text-gray-600 mt-1"
-          >
+          <p v-if="type === 'knock-knock'" class="text-sm text-gray-600 mt-1">
             Format example: <em>Knock knock. Who's there? Boo. Boo who?</em>
           </p>
         </div>
@@ -214,12 +206,37 @@ function handleSubmit() {
 </template>
 
 <style scoped>
-.fade-enter-active,
-.fade-leave-active {
-  transition: opacity 0.3s ease;
+.shrink-circle-enter-active,
+.shrink-circle-leave-active {
+  animation: shrink-fade-circle 0.5s ease-in-out forwards;
 }
-.fade-enter-from,
-.fade-leave-to {
-  opacity: 0;
+
+@keyframes shrink-fade-circle {
+  0% {
+    opacity: 1;
+    transform: scale(1);
+    border-radius: 0.5rem;
+  }
+  100% {
+    opacity: 0;
+    transform: scale(0.3);
+    border-radius: 9999px;
+  }
+}
+
+/* Prevent protrusion */
+.success-wrapper {
+  width: 100%;
+  max-width: 100%;
+  padding: 1rem;
+  overflow: hidden;
+}
+
+.success-wrapper > * {
+  max-width: 100%;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
 }
 </style>
+
