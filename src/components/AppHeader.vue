@@ -25,9 +25,11 @@
 
 
 <script setup>
-
+import { useAddJokeLink } from "@/composables/useAddJokeLink.js";
 import {RouterLink} from "vue-router";
 import AppLogo from "@/components/AppLogo.vue";
+
+const { addJokeLink } = useAddJokeLink();
 </script>
 
 <style lang="scss" scoped>
