@@ -3,7 +3,8 @@ import { ref } from 'vue';
 import { Plus, CheckCircle } from 'lucide-vue-next';
 import { useAnimatedEmoji } from '@/composables/useAnimatedEmoji.js';
 
-const { emojiAnimation } = useAnimatedEmoji();
+const { emojiAnimation, startEmojiAnim, stopEmojiAnim } = useAnimatedEmoji();
+
 const emit = defineEmits(['added', 'done']);
 
 const setupText = ref('');
@@ -91,6 +92,7 @@ function handleSubmit() {
   };
 
   showSuccess.value = true;
+  startEmojiAnim();
 
   setTimeout(() => {
     emit('added', newJoke);
@@ -100,6 +102,7 @@ function handleSubmit() {
     punchline.value = '';
     type.value = 'general';
     showSuccess.value = false;
+    stopEmojiAnim();
   }, 3000);
 }
 </script>

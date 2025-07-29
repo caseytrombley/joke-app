@@ -1,22 +1,26 @@
-import { ref, onMounted, onBeforeUnmount } from 'vue';
+import { ref } from 'vue';
 
-export function useAnimatedEmoji(frames = ['😄', '😊', '😆', '😂', '🤣', '😅'], speed = 300) {
+export function useAnimatedEmoji(frames = ['😄', '😊', '😆', '😂', '🤣', '😅'], intervalMs = 300) {
     const emojiAnimation = ref(frames[0]);
     let frame = 0;
-    let interval;
+    let intervalId = null;
 
-    onMounted(() => {
-        interval = setInterval(() => {
+    function startEmojiAnim() {
+        if (intervalId) return;
+        intervalId = setInterval(() => {
             frame = (frame + 1) % frames.length;
             emojiAnimation.value = frames[frame];
-        }, speed);
-    });
+        }, intervalMs);
+    }
 
-    onBeforeUnmount(() => {
-        clearInterval(interval);
-    });
+    function stopEmojiAnim() {
+        clearInterval(intervalId);
+        intervalId = null;
+    }
 
     return {
         emojiAnimation,
+        startEmojiAnim,
+        stopEmojiAnim,
     };
 }
