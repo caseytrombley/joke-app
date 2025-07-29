@@ -1,30 +1,11 @@
 <template>
-  <div>
-    <header class="bg-gray-800 text-white px-6 py-4">
-      <div class="max-w-6xl mx-auto flex items-center justify-between">
-        <RouterLink to="/" class="text-xl font-bold tracking-wide flex items-center gap-2">
-          <span><img src="/favicon-32x32.png" alt="" /></span>
-          <span>Jokester</span>
-        </RouterLink>
+  <div class="bg-gray-800">
+    <AppMasthead>
+      <AppHeader />
+      <AppHero2 />
+    </AppMasthead>
 
-        <nav class="flex gap-6 text-sm font-medium">
-          <RouterLink
-              to="/"
-              class="hover:underline transition-opacity opacity-90 hover:opacity-100"
-          >
-            Home
-          </RouterLink>
-          <RouterLink
-              :to="addJokeLink"
-              class="hover:underline transition-opacity opacity-90 hover:opacity-100"
-          >
-            Add Joke
-          </RouterLink>
-        </nav>
-      </div>
-    </header>
-
-    <main>
+    <main class="bg-white pb-12">
       <RouterView />
     </main>
 
@@ -36,6 +17,9 @@
 import { RouterLink, RouterView } from 'vue-router';
 import AppFooter from '@/components/AppFooter.vue';
 import { useAddJokeLink } from '@/composables/useAddJokeLink';
+import AppHeader from "@/components/AppHeader.vue";
+import AppMasthead from "@/components/AppMasthead.vue";
+import AppHero2 from "@/components/AppHero2.vue";
 
 const { addJokeLink } = useAddJokeLink();
 

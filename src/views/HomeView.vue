@@ -1,5 +1,5 @@
 <template>
-  <AppHero @add-joke="openAddModal()" />
+<!--  <AppHero @add-joke="openAddModal()" />-->
 
   <div class="max-w-6xl mx-auto p-4 py-6">
     <JokeFilters
@@ -70,7 +70,7 @@ import JokeCard from '../components/JokeCard.vue';
 import Pagination from '../components/Pagination.vue';
 import ConfirmModal from '../components/ConfirmModal.vue';
 import JokeFilters from "@/components/JokeFilters.vue";
-import AppHero from "@/components/AppHero.vue";
+//import AppHero from "@/components/AppHero.vue";
 import AddJokeModal from '@/components/AddJokeModal.vue';
 import AddJokeForm from '@/components/AddJokeForm.vue';
 

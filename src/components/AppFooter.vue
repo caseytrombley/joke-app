@@ -1,12 +1,12 @@
 <template>
-  <footer class="bg-white border-t border-gray-200 py-8 mt-12 shadow-inner">
+  <footer class="bg-gray-800 border-t border-gray-200 py-12  shadow-inner">
     <div class="max-w-6xl mx-auto px-4 flex flex-col md:flex-row justify-between items-center gap-4">
-      <div class="flex items-center gap-2 text-gray-700 text-sm font-medium">
+      <div class="flex items-center gap-2 text-gray-200 text-sm font-medium">
         <span class="text-2xl">🤡</span>
         <span>© {{ currentYear }} Jokester. Built for laughs.</span>
       </div>
 
-      <div class="flex items-center flex-wrap gap-6 text-sm text-gray-600">
+      <div class="flex items-center flex-wrap gap-6 text-sm text-gray-200">
         <a
             href="https://www.caseytrombley.com"
             target="_blank"
