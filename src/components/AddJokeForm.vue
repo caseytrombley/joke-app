@@ -122,8 +122,6 @@ defineExpose({ resetForm });
     </div>
 
 
-
-    <!-- Form content -->
     <div v-if="!showSuccess">
       <h1 class="text-4xl font-extrabold text-gray-800 flex items-center justify-center gap-2">
         <Plus class="w-7 h-7 text-pink-600" />
@@ -224,7 +222,6 @@ defineExpose({ resetForm });
   }
 }
 
-/* Prevent protrusion */
 .success-wrapper {
   width: 100%;
   max-width: 100%;

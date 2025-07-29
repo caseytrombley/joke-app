@@ -86,7 +86,6 @@ const showAddModal = ref(false);
 const jokeToDelete = ref(null);
 const addForm = ref(null);
 
-// -- Load jokes on mount
 onMounted(async () => {
   if (!store.jokes.length) {
     await store.fetchJokes();
@@ -102,12 +101,10 @@ onMounted(async () => {
   isLoading.value = false;
 });
 
-// -- Watch for `?add=true`
 watchEffect(() => {
   showAddModal.value = route.query.add === 'true';
 });
 
-// -- Watch page param
 watch(() => route.query.page, (newPage) => {
   const pageNum = parseInt(newPage, 10);
   if (!isNaN(pageNum)) {
@@ -117,12 +114,10 @@ watch(() => route.query.page, (newPage) => {
   }
 });
 
-// -- Handle modal open
 function openAddModal() {
   router.replace({ query: { ...route.query, add: 'true' } });
 }
 
-// -- Handle modal close (manual or programmatic)
 function closeAddModal() {
   showAddModal.value = false;
   const query = { ...route.query };
@@ -130,12 +125,10 @@ function closeAddModal() {
   router.replace({ query });
 }
 
-// -- Reset form when modal finishes closing
 function handleAddModalClosed() {
   addForm.value?.resetForm();
 }
 
-// -- Handle new joke added
 function handleJokeAdded(joke) {
   store.addCustomJoke({ ...joke, isNew: true });
 
@@ -149,7 +142,6 @@ function handleJokeAdded(joke) {
   }, 2000);
 }
 
-// -- Deletion
 function requestDelete(joke) {
   jokeToDelete.value = joke;
   showModal.value = true;
@@ -163,7 +155,6 @@ function confirmDelete() {
   }
 }
 
-// -- Derived values
 const jokeTypes = computed(() => {
   const types = new Set(store.jokes.map(j => j.type));
   return Array.from(types).sort();
