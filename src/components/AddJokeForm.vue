@@ -1,7 +1,9 @@
 <script setup>
 import { ref } from 'vue';
 import { Plus, CheckCircle } from 'lucide-vue-next';
+import { useAnimatedEmoji } from '@/composables/useAnimatedEmoji.js';
 
+const { emojiAnimation } = useAnimatedEmoji();
 const emit = defineEmits(['added', 'done']);
 
 const setupText = ref('');
@@ -98,7 +100,7 @@ function handleSubmit() {
     punchline.value = '';
     type.value = 'general';
     showSuccess.value = false;
-  }, 1500);
+  }, 3000);
 }
 </script>
 
@@ -109,8 +111,13 @@ function handleSubmit() {
           v-if="showSuccess"
           class="absolute inset-0 z-10 bg-white rounded-lg flex flex-col items-center justify-center"
       >
-        <CheckCircle class="w-16 h-16 text-green-700 mb-4 animate-bounce" />
-        <p class="text-lg font-semibold text-green-800">Joke added!</p>
+<!--        <CheckCircle class="w-16 h-16 text-green-700 mb-4 animate-bounce" />-->
+
+
+        <div class="text-8xl mb-4">
+          {{ emojiAnimation }}
+        </div>
+        <p class="text-xl font-semibold text-pink-600 animate-bounce">Joke added!</p>
       </div>
     </transition>
 
@@ -122,6 +129,7 @@ function handleSubmit() {
       <p class="text-gray-600 text-base mt-2 text-center">
         Got a zinger? Drop it here and share the laughs with the world.
       </p>
+
 
       <form
           @submit.prevent="handleSubmit"
