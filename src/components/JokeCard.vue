@@ -1,6 +1,6 @@
 <template>
   <div
-      class="joke-card relative space-y-2 p-4 rounded-lg shadow transition hover:shadow-md"
+      class="joke-card relative space-y-2 p-4 rounded-lg transition"
       :class="joke.isCustom ? 'bg-pink-100' : 'bg-gray-100'"
   >
 
@@ -124,7 +124,7 @@ function saveEdit() {
 const showPunchline = ref(false);
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 .fade-slide-enter-active,
 .fade-slide-leave-active {
   transition: all 0.3s ease;
@@ -136,5 +136,14 @@ const showPunchline = ref(false);
 .fade-slide-leave-to {
   opacity: 0;
   transform: translateY(-5px);
+}
+
+.joke-card {
+  box-shadow: 4px 4px 0 var(--color-gray-200);
+
+  &:hover {
+    box-shadow: 6px 6px 0 var(--color-gray-300);
+    transform: translateY(-2px);
+  }
 }
 </style>
