@@ -1,5 +1,5 @@
 <template>
-  <section class="relative overflow-hidden bg-transparent px-4">
+  <section class="relative overflow-hidden bg-transparent pt-12 pb-4 px-4">
 
 
     <div class="relative z-10 max-w-6xl mx-auto text-center space-y-4">

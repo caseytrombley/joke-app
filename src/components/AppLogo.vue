@@ -1,6 +1,6 @@
 <template>
   <RouterLink to="/" @click.prevent="replayAnimation">
-    <div ref="logo" class="logo text-pink-500 text-6xl inline-block">
+    <div ref="logo" class="logo text-pink-600 text-6xl inline-block">
       <span
           v-for="(char, index) in logoText"
           :key="index"
@@ -18,7 +18,7 @@ import { gsap } from 'gsap';
 import { RouterLink } from 'vue-router';
 
 const logo = ref(null);
-const logoText = 'JOKESTER'.split('');
+const logoText = 'Jokester'.split('');
 
 const animateLogo = () => {
   const wrappers = logo.value.querySelectorAll('.logo-letter');
