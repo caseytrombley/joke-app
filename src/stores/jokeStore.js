@@ -59,14 +59,8 @@ export const useJokeStore = defineStore('jokeStore', {
         },
 
         addCustomJoke(jokeData) {
-            const numericIds = this.jokes
-                .map(j => parseInt(j.id, 10))
-                .filter(id => !isNaN(id));
-
-            const nextId = numericIds.length > 0 ? Math.max(...numericIds) + 1 : 1;
-
             const newJoke = {
-                id: nextId,
+                id: `custom-${crypto.randomUUID()}`,
                 type: jokeData.type || 'general',
                 setup: jokeData.setup,
                 punchline: jokeData.punchline,
@@ -81,13 +75,14 @@ export const useJokeStore = defineStore('jokeStore', {
         },
 
 
+
         removeCustomJoke(id) {
             this.jokes = this.jokes.filter(joke => joke.id !== id);
 
             const saved = JSON.parse(localStorage.getItem('customJokes') || '[]');
             const updated = saved.filter(joke => joke.id !== id);
             localStorage.setItem('customJokes', JSON.stringify(updated));
-            //kill the rating too
+            //kill the rating on delete
             if (this.ratings[id]) {
                 delete this.ratings[id];
                 localStorage.setItem('jokeRatings', JSON.stringify(this.ratings));
