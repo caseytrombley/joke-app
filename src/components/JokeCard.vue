@@ -1,6 +1,6 @@
 <template>
   <div
-      class="joke-card relative space-y-2 p-4 rounded-lg transition"
+      class="joke-card relative space-y-2 rounded-lg transition"
       :class="joke.isCustom ? 'bg-pink-100' : 'bg-gray-100'"
   >
 
@@ -52,7 +52,7 @@
     </div>
 
     <div v-else>
-      <p class="pb-3 text-lg font-semibold text-gray-800">{{ joke.setup }}</p>
+      <p class="joke-setup pb-3 text-lg font-semibold text-gray-800">{{ joke.setup }}</p>
 
       <button
           @click="showPunchline = !showPunchline"
@@ -74,7 +74,7 @@
             v-if="showPunchline"
             class="bg-teal-400 px-6 py-6 text-lg text-white rounded-b-md"
         >
-          {{ joke.punchline }}
+          <span class="punchline">{{ joke.punchline }}</span>
         </div>
       </transition>
 
@@ -139,6 +139,7 @@ const showPunchline = ref(false);
 }
 
 .joke-card {
+  padding: 2rem 2.5rem;
   box-shadow: 4px 4px 0 var(--color-gray-200);
 
   &:hover {
@@ -146,4 +147,59 @@ const showPunchline = ref(false);
     transform: translateY(-2px);
   }
 }
+
+.card-header {
+  position: relative;
+  top: -.5rem;
+}
+
+.punchline {
+  position: relative;
+  padding: 0 1.5rem;
+  font-weight: 600;
+
+  &::before,
+  &::after {
+    position: absolute;
+    display: inline-block;
+    font-family: "Times New Roman", Times, serif;
+    color: rgba(255,255,255,0.3);
+    font-size: 3.5rem;
+    line-height: 1;
+    pointer-events: none;
+  }
+
+  &::before {
+    content: '“';
+    top: -1.25rem;
+    left: -.75rem;
+  }
+
+  &::after {
+    content: '”';
+    bottom: -1.25rem;
+    right: -.75rem;
+  }
+}
+
+//.joke-setup {
+//  &::before,
+//  &::after {
+//    position: absolute;
+//    display: inline-block;
+//    font-family: "Times New Roman", Times, serif;
+//    margin-top: -30px;
+//    color: var(--color-gray-300);
+//    font-size: 3rem;
+//
+//  }
+//  &::before {
+//    content: '“';
+//    margin-left: -30px;
+//  }
+//  &::after {
+//    content: '”';
+//    margin-left: 10px;
+//  }
+//}
 </style>
