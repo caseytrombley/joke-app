@@ -1,7 +1,10 @@
 <template>
   <div
       class="joke-card relative space-y-2 rounded-lg transition"
-      :class="joke.isCustom ? 'bg-pink-100' : 'bg-gray-100'"
+      :class="[
+        joke.isCustom ? 'bg-pink-100' : 'bg-gray-100',
+        isHighlighted ? 'highlight-new' : ''
+      ]"
   >
 
     <div v-if="joke.isCustom" class="absolute top-0 left-0 text-xs bg-pink-400 text-white px-2 py-0.5 rounded-tl-lg rounded-br-lg">
@@ -86,7 +89,7 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 import { useJokeStore } from '../stores/jokeStore';
 import StarRating from './StarRating.vue';
 import { Trash2, Pencil, ChevronDown } from 'lucide-vue-next';
@@ -105,9 +108,11 @@ function onRate(value) {
   store.rateJoke(joke.id, value);
 }
 
+const isHighlighted = ref(false);
 const isEditing = ref(false);
 const editSetup = ref(joke.setup);
 const editPunchline = ref(joke.punchline);
+const showPunchline = ref(false);
 function startEdit() {
   isEditing.value = true;
 }
@@ -121,7 +126,16 @@ function saveEdit() {
   isEditing.value = false;
 }
 
-const showPunchline = ref(false);
+
+onMounted(() => {
+  if (joke.highlight) {
+    isHighlighted.value = true;
+    setTimeout(() => {
+      isHighlighted.value = false;
+      joke.highlight = false;
+    }, 5000);
+  }
+});
 </script>
 
 <style lang="scss" scoped>
@@ -182,24 +196,67 @@ const showPunchline = ref(false);
   }
 }
 
-//.joke-setup {
-//  &::before,
-//  &::after {
-//    position: absolute;
-//    display: inline-block;
-//    font-family: "Times New Roman", Times, serif;
-//    margin-top: -30px;
-//    color: var(--color-gray-300);
-//    font-size: 3rem;
-//
+
+.highlight-new {
+  position: relative;
+  z-index: 0;
+  border-radius: 0.5rem;
+  overflow: hidden;
+  //background-color: #fef08a; /* Tailwind yellow-200 */
+  //animation: fade-bg 7s ease forwards;
+  transition: background-color 0.3s ease;
+}
+
+.highlight-new::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  z-index: 1;
+  opacity: 1;
+  animation: dash-border 1s linear infinite, fade-border 7s ease forwards;
+
+  background:
+      repeating-linear-gradient(90deg, #facc15 0 6px, transparent 6px 12px),
+      repeating-linear-gradient(180deg, #facc15 0 6px, transparent 6px 12px),
+      repeating-linear-gradient(270deg, #facc15 0 6px, transparent 6px 12px),
+      repeating-linear-gradient(0deg, #facc15 0 6px, transparent 6px 12px);
+  background-repeat: no-repeat;
+  background-size: 100% 3px, 3px 100%, 100% 3px, 3px 100%;
+  background-position: 0 0, 0 0, 0 100%, 100% 0;
+}
+
+@keyframes dash-border {
+  0% {
+    background-position: 0 0, 0 0, 0 100%, 100% 0;
+  }
+  100% {
+    background-position: 12px 0, 0 12px, -12px 100%, 100% -12px;
+  }
+}
+
+@keyframes fade-border {
+  0% {
+    opacity: 1;
+  }
+  80% {
+    opacity: 0;
+    background-color: transparent;
+  }
+  100% {
+    opacity: 0;
+    background-color: transparent;
+  }
+}
+
+//@keyframes fade-bg {
+//  0% {
+//    background-color: #fef08a;
 //  }
-//  &::before {
-//    content: '“';
-//    margin-left: -30px;
-//  }
-//  &::after {
-//    content: '”';
-//    margin-left: 10px;
+//  100% {
+//    background-color: #fbcfe8;
 //  }
 //}
+
 </style>

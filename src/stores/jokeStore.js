@@ -65,13 +65,17 @@ export const useJokeStore = defineStore('jokeStore', {
                 setup: jokeData.setup,
                 punchline: jokeData.punchline,
                 isCustom: true,
+                highlight: true,
             };
 
             this.jokes = [newJoke, ...this.jokes];
             this.currentPage = 1;
 
             const saved = JSON.parse(localStorage.getItem('customJokes') || '[]');
-            localStorage.setItem('customJokes', JSON.stringify([newJoke, ...saved]));
+            const jokeForStorage = { ...newJoke };
+            delete jokeForStorage.highlight;
+
+            localStorage.setItem('customJokes', JSON.stringify([jokeForStorage, ...saved]));
         },
 
 
