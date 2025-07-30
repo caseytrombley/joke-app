@@ -83,7 +83,6 @@ function handleSubmit() {
     setup: formattedSetup,
     punchline: capitalize(punchline.value.trim()),
     isCustom: true,
-    id: crypto.randomUUID(),
     highlight: true,
   };
 

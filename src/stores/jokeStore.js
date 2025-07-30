@@ -59,8 +59,11 @@ export const useJokeStore = defineStore('jokeStore', {
         },
 
         addCustomJoke(jokeData) {
-            const validIds = this.jokes.map(j => parseInt(j.id, 10)).filter(id => !isNaN(id));
-            const nextId = validIds.length > 0 ? Math.max(...validIds) + 1 : 1;
+            const numericIds = this.jokes
+                .map(j => parseInt(j.id, 10))
+                .filter(id => !isNaN(id));
+
+            const nextId = numericIds.length > 0 ? Math.max(...numericIds) + 1 : 1;
 
             const newJoke = {
                 id: nextId,
@@ -77,13 +80,20 @@ export const useJokeStore = defineStore('jokeStore', {
             localStorage.setItem('customJokes', JSON.stringify([newJoke, ...saved]));
         },
 
+
         removeCustomJoke(id) {
             this.jokes = this.jokes.filter(joke => joke.id !== id);
 
             const saved = JSON.parse(localStorage.getItem('customJokes') || '[]');
             const updated = saved.filter(joke => joke.id !== id);
             localStorage.setItem('customJokes', JSON.stringify(updated));
+            //kill the rating too
+            if (this.ratings[id]) {
+                delete this.ratings[id];
+                localStorage.setItem('jokeRatings', JSON.stringify(this.ratings));
+            }
         },
+
 
         editCustomJoke(id, newSetup, newPunchline) {
             const joke = this.jokes.find(j => j.id === id);

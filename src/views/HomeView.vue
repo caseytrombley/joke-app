@@ -130,7 +130,9 @@ function handleAddModalClosed() {
 }
 
 function handleJokeAdded(joke) {
-  store.addCustomJoke({ ...joke, isNew: true });
+  const { setup, punchline, type } = joke;
+  store.addCustomJoke({ setup, punchline, type, isNew: true });
+
 
   setTimeout(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
