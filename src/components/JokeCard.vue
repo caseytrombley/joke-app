@@ -133,7 +133,7 @@ onMounted(() => {
     setTimeout(() => {
       isHighlighted.value = false;
       joke.highlight = false;
-    }, 5000);
+    }, 7000);
   }
 });
 </script>
@@ -153,7 +153,7 @@ onMounted(() => {
 }
 
 .joke-card {
-  padding: 2rem 2.5rem;
+  padding: 1rem 1.5rem;
   box-shadow: 4px 4px 0 var(--color-gray-200);
 
   &:hover {
@@ -164,7 +164,15 @@ onMounted(() => {
 
 .card-header {
   position: relative;
-  top: -.5rem;
+}
+
+@media (min-width: 480px) {
+  .joke-card {
+    padding: 2rem 2.5rem;
+  }
+  .card-header {
+    top: -.5rem;
+  }
 }
 
 .punchline {
@@ -203,7 +211,8 @@ onMounted(() => {
   border-radius: 0.5rem;
   overflow: hidden;
   //background-color: #fef08a; /* Tailwind yellow-200 */
-  //animation: fade-bg 7s ease forwards;
+  transform: scale(1);
+  animation: fade-bg 2s ease forwards;
   transition: background-color 0.3s ease;
 }
 
@@ -250,13 +259,19 @@ onMounted(() => {
   }
 }
 
-//@keyframes fade-bg {
-//  0% {
-//    background-color: #fef08a;
-//  }
-//  100% {
-//    background-color: #fbcfe8;
-//  }
-//}
+@keyframes fade-bg {
+  0% {
+    transform: scale(1);
+    background-color: #fef08a;
+  }
+  50% {
+    transform: scale(1.025);
+    background-color: #fef08a;
+  }
+  100% {
+    transform: scale(1);
+    background-color: #fce7f3;
+  }
+}
 
 </style>
