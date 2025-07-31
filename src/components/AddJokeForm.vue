@@ -92,7 +92,6 @@ function handleSubmit() {
   setTimeout(() => {
     emit('added', newJoke);
     emit('done');
-    // Wait for parent to call resetForm() after modal animation
   }, 3000);
 }
 

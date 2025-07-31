@@ -134,9 +134,21 @@ function handleJokeAdded(joke) {
   store.addCustomJoke({ setup, punchline, type, isNew: true });
 
 
+  // setTimeout(() => {
+  //   window.scrollTo({ top: 0, behavior: 'smooth' });
+  // }, 100);
+
+  //scroll to new joke on add
   setTimeout(() => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    const newEl = document.querySelector('.highlight-new');
+    if (newEl) {
+      const yOffset = -80; // Change this value to control top margin
+      const y = newEl.getBoundingClientRect().top + window.scrollY + yOffset;
+      window.scrollTo({ top: y, behavior: 'smooth' });
+    }
   }, 100);
+
+
 
   setTimeout(() => {
     const item = store.jokes.find(j => j.id === joke.id);
