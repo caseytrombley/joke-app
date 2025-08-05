@@ -12,7 +12,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Use Node.js 20 (fully supported by plugin-vue 6.0)
+      - name: Use Node.js 20
         uses: actions/setup-node@v4
         with:
           node-version: '20'
@@ -28,7 +28,7 @@ jobs:
       - name: Confirm plugin-vue version
         run: npm ls @vitejs/plugin-vue
 
-      - name: Build project (this WILL succeed now)
+      - name: Build project
         run: npm run build
 
       - name: Run Cypress tests
