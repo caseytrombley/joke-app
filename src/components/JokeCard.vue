@@ -210,6 +210,7 @@ onMounted(() => {
   z-index: 0;
   border-radius: 0.5rem;
   overflow: hidden;
+  scroll-margin-top: 80px;
   //background-color: #fef08a; /* Tailwind yellow-200 */
   transform: scale(1);
   animation: fade-bg 2s ease forwards;

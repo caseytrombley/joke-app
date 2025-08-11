@@ -61,7 +61,7 @@
 </template>
 
 <script setup>
-import { onMounted, computed, ref, watch, watchEffect } from 'vue';
+import { onMounted, computed, nextTick, ref, watch, watchEffect } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useJokeStore } from '../stores/jokeStore';
 import JokeCard from '../components/JokeCard.vue';
@@ -126,22 +126,28 @@ function handleAddModalClosed() {
   addForm.value?.resetForm();
 }
 
-function handleJokeAdded(joke) {
+async function handleJokeAdded(joke) {
   const { setup, punchline, type } = joke;
+
+  if (selectedType.value !== 'all') selectedType.value = 'all';
+
   store.addCustomJoke({ setup, punchline, type, isNew: true });
+  store.setPage(1, router);
+
+  await nextTick();
 
   setTimeout(() => {
-    const newEl = document.querySelector('.highlight-new');
-    if (newEl) {
-      const yOffset = -80;
-      const y = newEl.getBoundingClientRect().top + window.scrollY + yOffset;
-      window.scrollTo({ top: y, behavior: 'smooth' });
-    }
-  }, 100);
+    const el = document.querySelector('.highlight-new');
+    if (!el) return;
+    const filtersEl = document.querySelector('.filters');
+    const offset = (filtersEl?.offsetHeight ?? 0) + 24;
+    const y = el.getBoundingClientRect().top + window.scrollY - offset;
+    window.scrollTo({ top: y, behavior: 'smooth' });
+  }, 350);
 
   setTimeout(() => {
-    const item = store.jokes.find(j => j.id === joke.id);
-    if (item) item.isNew = false;
+    const first = store.jokes[0];
+    if (first) first.highlight = false;
   }, 2000);
 }
 
