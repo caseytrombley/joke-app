@@ -85,6 +85,10 @@
         <StarRating :model-value="rating" @rate="onRate" />
       </div>
     </div>
+
+    <div class="absolute bottom-0 right-0 text-xs bg-gray-200 text-white px-2 py-0.5 rounded-tl-lg rounded-br-lg">
+      {{ formatType(joke.type) }}
+    </div>
   </div>
 </template>
 
@@ -126,6 +130,12 @@ function saveEdit() {
   isEditing.value = false;
 }
 
+function formatType(type) {
+  return type
+      .split('-')
+      .map(w => w.charAt(0).toUpperCase() + w.slice(1))
+      .join(' ');
+}
 
 onMounted(() => {
   if (joke.highlight) {
