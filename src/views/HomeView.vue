@@ -195,12 +195,12 @@ const totalPages = computed(() =>
 
 const currentPage = computed(() => store.currentPage);
 
-// reset to page 1 when filter/sort changes
+//reset to page 1 when filter/sort
 watch([selectedType, sortByRating], () => {
   store.setPage(1, router);
 });
 
-// clamp page if filtered list shrinks
+//clamp page if filtered list shrinks
 watch(() => totalPages.value, (tp) => {
   const safe = Math.max(1, tp || 1);
   if (store.currentPage > safe) {
