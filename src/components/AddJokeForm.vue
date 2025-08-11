@@ -16,20 +16,18 @@ const errors = ref({
   punchline: ''
 });
 
-function capitalize(text) {
+function capitalizeSentences(text) {
   if (!text) return '';
-  return text.charAt(0).toUpperCase() + text.slice(1);
+  return text
+      .toLowerCase()
+      .replace(/(^\s*\w|[.?!]\s*\w)/g, c => c.toUpperCase());
 }
 
 function normalizeSetup(text) {
   let trimmed = text.trim();
-  trimmed = capitalize(trimmed);
-  const questionWords = ['What', 'How', 'Who', 'When', 'Where', 'Why'];
-  const firstWord = trimmed.split(' ')[0];
-  if (questionWords.includes(firstWord) && !/[?]$/.test(trimmed)) {
+  trimmed = capitalizeSentences(trimmed);
+  if (!/[?]$/.test(trimmed)) {
     trimmed += '?';
-  } else if (!/[.?!]$/.test(trimmed)) {
-    trimmed += '.';
   }
   return trimmed;
 }
@@ -63,25 +61,12 @@ function validateForm() {
 function handleSubmit() {
   if (!validateForm()) return;
 
-  const formattedSetup =
-      type.value === 'knock-knock'
-          ? (() => {
-            const parts = setupText.value
-                .split('\n')
-                .map(line => capitalize(line.trim()))
-                .filter(Boolean);
-            let joined = parts.join('. ');
-            if (!/[.?!]$/.test(joined)) {
-              joined += '.';
-            }
-            return joined;
-          })()
-          : normalizeSetup(setupText.value);
+  const formattedSetup = normalizeSetup(setupText.value);
 
   const newJoke = {
     type: type.value,
     setup: formattedSetup,
-    punchline: capitalize(punchline.value.trim()),
+    punchline: capitalizeSentences(punchline.value.trim()),
     isCustom: true,
     highlight: true,
   };
@@ -118,7 +103,6 @@ defineExpose({ resetForm });
         <p class="text-xl font-semibold text-pink-600 animate-bounce">Joke added!</p>
       </div>
     </div>
-
 
     <div v-if="!showSuccess">
       <h1 class="text-4xl font-extrabold text-gray-800 flex items-center justify-center gap-2">
@@ -202,24 +186,6 @@ defineExpose({ resetForm });
 </template>
 
 <style scoped>
-.shrink-circle-enter-active,
-.shrink-circle-leave-active {
-  animation: shrink-fade-circle 0.5s ease-in-out forwards;
-}
-
-@keyframes shrink-fade-circle {
-  0% {
-    opacity: 1;
-    transform: scale(1);
-    border-radius: 0.5rem;
-  }
-  100% {
-    opacity: 0;
-    transform: scale(0.3);
-    border-radius: 9999px;
-  }
-}
-
 .success-wrapper {
   width: 100%;
   max-width: 100%;
@@ -234,4 +200,3 @@ defineExpose({ resetForm });
   overflow: hidden;
 }
 </style>
-
