@@ -1,6 +1,4 @@
 <template>
-<!--  <AppHero @add-joke="openAddModal()" />-->
-
   <div class="max-w-6xl mx-auto p-4 py-6">
     <JokeFilters
         :loading="isLoading"
@@ -70,7 +68,6 @@ import JokeCard from '../components/JokeCard.vue';
 import Pagination from '../components/Pagination.vue';
 import ConfirmModal from '../components/ConfirmModal.vue';
 import JokeFilters from "@/components/JokeFilters.vue";
-//import AppHero from "@/components/AppHero.vue";
 import AddJokeModal from '@/components/AddJokeModal.vue';
 import AddJokeForm from '@/components/AddJokeForm.vue';
 
@@ -133,22 +130,14 @@ function handleJokeAdded(joke) {
   const { setup, punchline, type } = joke;
   store.addCustomJoke({ setup, punchline, type, isNew: true });
 
-
-  // setTimeout(() => {
-  //   window.scrollTo({ top: 0, behavior: 'smooth' });
-  // }, 100);
-
-  //scroll to new joke on add
   setTimeout(() => {
     const newEl = document.querySelector('.highlight-new');
     if (newEl) {
-      const yOffset = -80; // Change this value to control top margin
+      const yOffset = -80;
       const y = newEl.getBoundingClientRect().top + window.scrollY + yOffset;
       window.scrollTo({ top: y, behavior: 'smooth' });
     }
   }, 100);
-
-
 
   setTimeout(() => {
     const item = store.jokes.find(j => j.id === joke.id);
@@ -197,7 +186,21 @@ const paginatedJokes = computed(() => {
 const totalPages = computed(() =>
     Math.ceil(filteredJokes.value.length / store.jokesPerPage)
 );
+
 const currentPage = computed(() => store.currentPage);
+
+//reset to page 1 when filter/sort
+watch([selectedType, sortByRating], () => {
+  store.setPage(1, router);
+});
+
+//clamp page if filtered list shrinks
+watch(() => totalPages.value, (tp) => {
+  const safe = Math.max(1, tp || 1);
+  if (store.currentPage > safe) {
+    store.setPage(safe, router);
+  }
+});
 </script>
 
 <style lang="scss" scoped>
